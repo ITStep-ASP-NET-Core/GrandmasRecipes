@@ -1,0 +1,6 @@
+@GrandmasRecipes.WebApi_HostAddress = http://localhost:5277
+
+GET {{GrandmasRecipes.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
