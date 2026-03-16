@@ -1,49 +1,21 @@
-﻿using GrandmasRecipes.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GrandmasRecipes.Domain.Entities
 {
-	public class Recipe
-	{
-		[Key]
-		public int Id { get; set; }
+    public class Recipe
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string? Description { get; set; }
+        public string? ImagePath { get; set; }
+        public int LikesCount { get; set; } // Правка Сани [cite: 71]
 
-		public string Title { get; set; } = null!;
+        public Guid AuthorId { get; set; }
+        public Account Author { get; set; } = null!;
 
-		public int Calories { get; set; }
-
-		public Dificulty Dificulty { get; set; }
-
-		public string? Description { get; set; }
-
-		public string? VideoUrl { get; set; }
-
-		public int? AuthorId { get; set; }
-
-		[ForeignKey(nameof(AuthorId))]
-		public Account? Author { get; set; }
-
-		public int? CuisineId { get; set; }
-
-		[ForeignKey(nameof(CuisineId))]
-		public Cuisine? Cuisine { get; set; }
-
-		public IEnumerable<string> Photos { get; set; } = [];
-
-		public IEnumerable<int> CategoryIds { get; set; } = [];
-
-		public IEnumerable<Category> Categories { get; set; } = [];
-
-		public IEnumerable<Step> Steps { get; set; } = [];
-
-		public IEnumerable<int> ReviewIds { get; set; } = [];
-
-		public IEnumerable<Review> Reviews { get; set; } = [];
-
-		public IEnumerable<int> IngredientIds { get; set; } = [];
-
-		public IEnumerable<Ingredient> Ingredients { get; set; } = [];
-
-	}
+        public ICollection<Step> Steps { get; set; } = new List<Step>();
+        public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>(); // Это лечит CS1061 
+    }
 }

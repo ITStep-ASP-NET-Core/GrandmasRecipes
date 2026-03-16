@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="GrandmasRecipes.Application/GrandmasRecipes.Application.csproj" />
+  <Project Path="GrandmasRecipes.Domain/GrandmasRecipes.Domain.csproj" />
+  <Project Path="GrandmasRecipes.Infrastructure/GrandmasRecipes.Infrastructure.csproj" />
+  <Project Path="GrandmasRecipes.WebApi/GrandmasRecipes.WebApi.csproj" />
+</Solution>
