@@ -11,8 +11,9 @@ namespace GrandmasRecipes.Domain.Entities
         public string? ImagePath { get; set; }
         public int LikesCount { get; set; } // Правка Сани [cite: 71]
 
-        public Guid AuthorId { get; set; }
-        public Account Author { get; set; } = null!;
+
+        public Guid? AuthorId { get; set; } // Добавь вопрос сюда
+        public Account? Author { get; set; } // И сюда
 
         public ICollection<Step> Steps { get; set; } = new List<Step>();
         public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();

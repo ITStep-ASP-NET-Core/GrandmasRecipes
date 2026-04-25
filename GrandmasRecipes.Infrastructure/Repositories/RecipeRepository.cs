@@ -25,5 +25,10 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 
         public IQueryable<Recipe> GetRecipesByAuthor(Guid authorId)
             => _context.Recipes.Where(r => r.AuthorId == authorId).Include(r => r.Author).AsNoTracking();
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
+
 }
