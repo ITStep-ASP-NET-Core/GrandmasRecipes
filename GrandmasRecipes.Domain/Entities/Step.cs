@@ -1,20 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrandmasRecipes.Domain.Entities
 {
-	public class Step
-	{
-		[Key]
-		public int Id { get; set; }
+    [Table("Steps")]
+    public class Step
+    {
+        [Key]
+        public Guid Id { get; set; } // Свой собственный Guid
 
-		public int RecipeId { get; set; }
+        public int Number { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
 
-		public int Name { get; set; }
+        // Связь с рецептом (Guid совпадает с Guid в Recipe)
+        public Guid RecipeId { get; set; }
 
-		public string? Description { get; set; }
-
-		public string? Image { get; set; }
-
-		public IEnumerable<string> Substeps { get; set; } = [];
-	}
+        [ForeignKey(nameof(RecipeId))]
+        public Recipe Recipe { get; set; } = null!;
+    }
 }
