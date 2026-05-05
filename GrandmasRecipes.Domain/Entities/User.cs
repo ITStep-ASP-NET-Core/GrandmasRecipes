@@ -1,13 +1,18 @@
-﻿namespace GrandmasRecipes.Domain.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace GrandmasRecipes.Domain.Entities
 {
-	public class User : Account
-	{
-		public string UserName { get; set; } = null!;
+    public class User : IdentityUser<Guid>     // ← ЗМІНИЛИ З Account НА ЦЕ
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
 
-		public bool IsBlocked { get; set; }
+        public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
 
-		public IEnumerable<Recipe> Recipes { get; set; } = [];
+        public int TotalLikes { get; set; } = 0;
 
-		public IEnumerable<Review> Reviews { get; set; } = [];
-	}
+        public ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
+
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    }
 }
