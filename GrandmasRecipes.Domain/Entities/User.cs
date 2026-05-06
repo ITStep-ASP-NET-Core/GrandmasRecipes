@@ -1,18 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
-
+﻿
 namespace GrandmasRecipes.Domain.Entities
 {
-    public class User : IdentityUser<Guid>     // ← ЗМІНИЛИ З Account НА ЦЕ
+    public class User : Account
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+		public string? ImageUrl { get; set; }
+		public int Likes { get; set; } = 0;
+		public int Published { get; set; } = 0;
+		public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
+		public ICollection<Recipe> Recipes { get; set; } = [];
 
-        public int TotalLikes { get; set; } = 0;
+		public ICollection<Recipe> Liked { get; set; } = [];
 
-        public ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
-
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+		public ICollection<Review> Reviews { get; set; } = [];
     }
 }

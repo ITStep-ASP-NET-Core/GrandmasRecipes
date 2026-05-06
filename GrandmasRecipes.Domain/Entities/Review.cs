@@ -16,8 +16,6 @@ namespace GrandmasRecipes.Domain.Entities
         [ForeignKey(nameof(AccountId))]
         public Account? Account { get; set; }
 
-        public bool IsLiked { get; set; }
-
-        public string? Text { get; set; }
+        public string Comment { get; set; } = string.Empty;
     }
 }

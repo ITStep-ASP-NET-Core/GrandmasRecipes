@@ -1,22 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GrandmasRecipes.Domain.Entities
 {
     public class Recipe
     {
+		[Key]
         public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string? Description { get; set; }
-        public string? ImagePath { get; set; }
-        public int LikesCount { get; set; } // Правка Сани [cite: 71]
+		public string[]? ImageUrls { get; set; }
+        public int Calories { get; set; }
+        public int Likes { get; set; }
+        public DateTime PublishedDate { get; set; } = DateTime.Now;
 
 
-        public Guid? AuthorId { get; set; } // Добавь вопрос сюда
-        public Account? Author { get; set; } // И сюда
+		public Guid AuthorId { get; set; }
+		[ForeignKey(nameof(AuthorId))]
+		public Account? Author { get; set; }
 
-        public ICollection<Step> Steps { get; set; } = new List<Step>();
-        public ICollection<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
-        public ICollection<Review> Reviews { get; set; } = new List<Review>(); // Это лечит CS1061 
+		public int DificultyId { get; set; }
+		[ForeignKey(nameof(DificultyId))]
+		public Dificulty? Dificulty { get; set; }
+
+		public int CuisineId { get; set; }
+		[ForeignKey(nameof(CuisineId))]
+		public Cuisine? Cuisine { get; set; }
+
+        public ICollection<Category> Categories { get; set; } = [];
+        public ICollection<Ingredient> Ingredients { get; set; } = [];
+		public ICollection<Step> Steps { get; set; } = [];
+		public ICollection<Review> Reviews { get; set; } = [];
     }
 }

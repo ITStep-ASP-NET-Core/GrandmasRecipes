@@ -1,5 +1,4 @@
-﻿using GrandmasRecipes.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GrandmasRecipes.Domain.Entities
 {
@@ -9,8 +8,5 @@ namespace GrandmasRecipes.Domain.Entities
 		public int Id { get; set; }
 
 		public string Name { get; set; } = null!;
-
-		public Measure Measure { get; set; }
-
 	}
 }

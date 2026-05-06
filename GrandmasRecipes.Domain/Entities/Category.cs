@@ -11,7 +11,9 @@ namespace GrandmasRecipes.Domain.Entities
 
 		public string? Description { get; set; }
 
-		public IEnumerable<Recipe> Recipes { get; set; } = [];
+		public string? ImageUrl { get; set; }
+
+		public ICollection<Recipe> Recipes { get; set; } = [];
 
 	}
 }
