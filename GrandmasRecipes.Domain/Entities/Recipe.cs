@@ -31,5 +31,6 @@ namespace GrandmasRecipes.Domain.Entities
         public ICollection<Ingredient> Ingredients { get; set; } = [];
 		public ICollection<Step> Steps { get; set; } = [];
 		public ICollection<Review> Reviews { get; set; } = [];
-    }
+		public ICollection<Like> Liked { get; set; } = [];
+	}
 }

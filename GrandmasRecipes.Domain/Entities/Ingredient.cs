@@ -11,7 +11,10 @@ namespace GrandmasRecipes.Domain.Entities
 
         public Guid RecipeId { get; set; }
 
-        public int ProductId { get; set; }
+		[ForeignKey(nameof(RecipeId))]
+		public Recipe? Recipe { get; set; }
+
+		public int ProductId { get; set; }
 
         [ForeignKey(nameof(ProductId))]
         public Product? Product { get; set; }

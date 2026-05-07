@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GrandmasRecipes.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace GrandmasRecipes.Domain.Entities
 {
@@ -11,7 +12,7 @@ namespace GrandmasRecipes.Domain.Entities
 
 		public string? ImageUrl { get; set; }
 
-		public Enums.Dificulty Level { get; set; } = Enums.Dificulty.None;
+		public DificultyLevel Level { get; set; } = DificultyLevel.None;
 
 		public ICollection<Recipe> Recipes { get; set; } = [];
 

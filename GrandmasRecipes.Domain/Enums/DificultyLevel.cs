@@ -1,6 +1,6 @@
 ﻿namespace GrandmasRecipes.Domain.Enums
 {
-	public enum Dificulty
+	public enum DificultyLevel
 	{
 		None = 0,
 		Easy = 1,
