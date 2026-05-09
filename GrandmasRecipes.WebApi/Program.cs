@@ -1,6 +1,5 @@
+using GrandmasRecipes.Application.ServiceProviderExtensions;
 using GrandmasRecipes.Infrastructure.Data;
-using GrandmasRecipes.Infrastructure.Interfaces;
-using GrandmasRecipes.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Подключаем базу через строку соединения из конфига
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Регистрация всех репозиториев и сервисов через UnitOfWork
+builder.Services.AddUnitOfWork();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -18,15 +20,7 @@ builder.Services.AddControllers()
 
 // Конфиг для генерации документации Swagger
 builder.Services.AddEndpointsApiExplorer();
-
-// Регистрация репозиториев для DI-контейнера
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-
-builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
-
 builder.Services.AddSwaggerGen();
-
 
 builder.Services.AddCors(options =>
 {
@@ -37,7 +31,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment())
 {

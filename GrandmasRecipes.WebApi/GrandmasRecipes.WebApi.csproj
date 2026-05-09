@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GrandmasRecipes.Infrastructure\GrandmasRecipes.Infrastructure.csproj" />
+	  <ProjectReference Include="..\GrandmasRecipes.Application\GrandmasRecipes.Application.csproj" />
   </ItemGroup>
 
 </Project>
