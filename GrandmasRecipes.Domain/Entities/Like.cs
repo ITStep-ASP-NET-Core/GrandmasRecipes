@@ -13,5 +13,6 @@ namespace GrandmasRecipes.Domain.Entities
 
 		[ForeignKey(nameof(RecipeId))]
 		public Recipe? Recipe { get; set; }
-	}
+        public DateTime LikedAt { get; set; } = DateTime.UtcNow;
+    }
 }

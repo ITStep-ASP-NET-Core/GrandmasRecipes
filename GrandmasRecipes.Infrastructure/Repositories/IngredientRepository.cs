@@ -9,7 +9,6 @@ namespace GrandmasRecipes.Infrastructure.Repositories
     {
         private readonly ApplicationContext _context;
 
-        // Внедряем контекст БД
         public IngredientRepository(ApplicationContext context)
         {
             _context = context;

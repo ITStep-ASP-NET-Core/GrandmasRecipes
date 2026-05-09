@@ -1,6 +1,7 @@
 using GrandmasRecipes.Infrastructure.Data;
 using GrandmasRecipes.Infrastructure.Interfaces;
 using GrandmasRecipes.Infrastructure.Repositories;
+using GrandmasRecipes.Infrastructure.ServiceProviderExtensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +11,7 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Регистрация репозиториев для DI-контейнера
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddInfrastructure();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

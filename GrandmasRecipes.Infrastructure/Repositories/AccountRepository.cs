@@ -24,7 +24,6 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 
         public void Delete(Account account) => _context.Accounts.Remove(account);
 
-        // Реализация сохранения изменений через контекст
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }
 }

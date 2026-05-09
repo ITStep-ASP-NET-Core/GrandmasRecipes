@@ -1,20 +1,18 @@
-﻿using GrandmasRecipes.Domain.Entities;
+﻿using GrandmasRecipes.Application.Common;
+using GrandmasRecipes.Domain.Entities;
 
 namespace GrandmasRecipes.Infrastructure.Interfaces
 {
     public interface IRecipeRepository
     {
-        IQueryable<Recipe> GetAll();
+        IQueryable<Recipe> GetAllAsync();
         Task<Recipe?> GetByIdAsync(Guid id);
         Task AddAsync(Recipe entity);
-        void Update(Recipe entity);
-        void Delete(Recipe entity);
-
-        // --- ДОБАВЬ ЭТУ СТРОКУ ---
+        void UpdateAsync(Recipe entity);
+        void DeleteAsync(Recipe entity);
         Task SaveChangesAsync();
-        // -------------------------
-
-        IQueryable<Recipe> GetRecipesWithAuthors();
-        IQueryable<Recipe> GetRecipesByAuthor(Guid authorId);
+        IQueryable<Recipe> GetRecipesByAuthorAsync(Guid authorId);
+        Task<PagedResult<Recipe>> GetByLikesPagedAsync(int page, int pageSize = 20);
+        Task<Recipe?> GetRecipeDetailsAsync(Guid id);
     }
 }
