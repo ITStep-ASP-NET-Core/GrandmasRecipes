@@ -2,5 +2,5 @@ using GrandmasRecipes.Application.DTO.Common;
 
 namespace GrandmasRecipes.Application.DTO.Category
 {
-	public class CategoryDto : LookupDto { }
+	public class CategorySummaryDto : LookupSummaryDto { }
 }
