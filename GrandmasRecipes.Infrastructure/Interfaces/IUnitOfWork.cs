@@ -1,12 +1,15 @@
-﻿namespace GrandmasRecipes.Infrastructure.Interfaces
+﻿using GrandmasRecipes.Domain.Entities;
+
+namespace GrandmasRecipes.Infrastructure.Interfaces
 {
     public interface IUnitOfWork
     {
-        IRecipeRepository Recipes { get; }
+        IGenericRepository<Category> Categories { get; }
+        IGenericRepository<Cuisine> Cuisines { get; }
+        IGenericRepository<Difficulty> Difficulties { get; }
+        IGenericRepository<Product> Products { get; }
+		IRecipeRepository Recipes { get; }
         IAccountRepository Accounts { get; }
-        ICategoryRepository Categories { get; }
-        ICuisineRepository Cuisines { get; }
-        IProductRepository Products { get; }
         IReviewRepository Reviews { get; }
         IIngredientRepository Ingredients { get; }
 

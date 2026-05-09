@@ -17,5 +17,8 @@ namespace GrandmasRecipes.Domain.Entities
         public Account? Account { get; set; }
 
         public string Comment { get; set; } = string.Empty;
-    }
+
+        public DateTime SendingDate { get; set; } = DateTime.Now;
+
+	}
 }

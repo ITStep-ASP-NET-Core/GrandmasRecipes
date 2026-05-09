@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-public interface IGenericRepository<T> where T : class
+﻿
+namespace GrandmasRecipes.Infrastructure.Interfaces
 {
-    IQueryable<T> GetAllAsync();
-    Task<T?> GetByIdAsync(Guid id);
-    Task AddAsync(T entity);
-    void UpdateAsync(T entity);
-    void DeleteAsync(T entity);
-    Task SaveAsync();
+	public interface IGenericRepository<T> where T : class
+	{
+		Task<ICollection<T>> GetAllAsync ( );
+		Task<T?> GetByIdAsync ( int id );
+
+		Task AddAsync ( T obj );
+		void Update ( T obj );
+		void Delete ( T obj );
+	}
 }

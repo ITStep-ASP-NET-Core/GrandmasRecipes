@@ -1,4 +1,5 @@
-﻿using GrandmasRecipes.Domain.Entities;
+﻿using GrandmasRecipes.Application.Common;
+using GrandmasRecipes.Domain.Entities;
 using GrandmasRecipes.Infrastructure.Data;
 using GrandmasRecipes.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -6,42 +7,48 @@ using Microsoft.EntityFrameworkCore;
 namespace GrandmasRecipes.Infrastructure.Repositories
 {
     public class ReviewRepository : IReviewRepository
-    {
-        private readonly ApplicationContext _context;
+	{
+		private readonly ApplicationContext _context;
 
-        public ReviewRepository(ApplicationContext context)
-        {
-            _context = context;
-        }
+		public ReviewRepository ( ApplicationContext context )
+		{
+			_context = context;
+		}
 
-        public IQueryable<Review> GetAll()
-            => _context.Reviews.AsNoTracking();
+		public async Task<PagedResult<Review>> GetReviewsByRecipeIdAsync ( Guid recipeId, int page, int pageSize = 10 )
+		{
+			var query = _context.Reviews.Where(r => r.RecipeId == recipeId);
 
-        public async Task<Review?> GetByIdAsync(int id)
-            => await _context.Reviews.FindAsync(id);
+			var items = await query
+				.OrderByDescending(r => r.SendingDate)
+				.Skip(page * pageSize)
+				.Take(pageSize)
+				.Include(r => r.Account)
+				.AsNoTracking()
+				.ToListAsync();
 
-        public IQueryable<Review> GetByRecipeId(Guid recipeId)
-            => _context.Reviews
-                .Where(r => r.RecipeId == recipeId)
-                .Include(r => r.Account)
-                .AsNoTracking();
+			return new PagedResult<Review>
+			{
+				Items = items,
+				PageNumber = page,
+				PageSize = pageSize,
+				TotalCount = await query.CountAsync()
+			};
+		}
 
-        public IQueryable<Review> GetByAccountId(Guid accountId)
-            => _context.Reviews
-                .Where(r => r.AccountId == accountId)
-                .Include(r => r.Recipe)
-                .AsNoTracking();
+		public async Task AddReviewAsync ( Review review )
+		{
+			await _context.Reviews.AddAsync(review);
+		}
 
-        public async Task AddAsync(Review entity)
-            => await _context.Reviews.AddAsync(entity);
+		public void UpdateReview ( Review review )
+		{
+			_context.Reviews.Update(review);
+		}
 
-        public void Update(Review entity)
-            => _context.Reviews.Update(entity);
-
-        public void Delete(Review entity)
-            => _context.Reviews.Remove(entity);
-
-        public async Task SaveChangesAsync()
-            => await _context.SaveChangesAsync();
-    }
+		public void DeleteReview ( Review review )
+		{
+			_context.Reviews.Remove(review);
+		}
+	}
 }

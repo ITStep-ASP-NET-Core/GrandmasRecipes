@@ -48,8 +48,8 @@ namespace GrandmasRecipes.Infrastructure.Data
 			);
 			context.SaveChanges();
 
-			var difficultyEasy = new Dificulty { Name = "Легко", Level = DificultyLevel.Easy };
-			var difficultyNormal = new Dificulty { Name = "Нормально", Level = DificultyLevel.Normal };
+			var difficultyEasy = new Difficulty { Name = "Легко", Level = DifficultyLevel.Easy };
+			var difficultyNormal = new Difficulty { Name = "Нормально", Level = DifficultyLevel.Normal };
 
 			context.Dificulties.AddRange(difficultyEasy, difficultyNormal);
 			context.SaveChanges();
@@ -76,7 +76,7 @@ namespace GrandmasRecipes.Infrastructure.Data
 				Calories = 220,
 				Likes = 2,
 				AuthorId = user1.Id,
-				DificultyId = difficultyEasy.Id,
+				DifficultyId = difficultyEasy.Id,
 				CuisineId = cuisineEuropean.Id,
 				Categories = [categoryDessert],
 				Steps = [
@@ -121,7 +121,7 @@ namespace GrandmasRecipes.Infrastructure.Data
 				Calories = 380,
 				Likes = 1,
 				AuthorId = user2.Id,
-				DificultyId = difficultyNormal.Id,
+				DifficultyId = difficultyNormal.Id,
 				CuisineId = cuisineItalian.Id,
 				Categories = [categoryMain],
 				Steps = [

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GrandmasRecipes.Domain.Entities
 {
-	public class Dificulty
+	public class Difficulty
 	{
 		[Key]
 		public int Id { get; set; }
@@ -12,7 +12,7 @@ namespace GrandmasRecipes.Domain.Entities
 
 		public string? ImageUrl { get; set; }
 
-		public DificultyLevel Level { get; set; } = DificultyLevel.None;
+		public DifficultyLevel Level { get; set; } = DifficultyLevel.None;
 
 		public ICollection<Recipe> Recipes { get; set; } = [];
 

@@ -19,9 +19,9 @@ namespace GrandmasRecipes.Domain.Entities
 		[ForeignKey(nameof(AuthorId))]
 		public Account? Author { get; set; }
 
-		public int DificultyId { get; set; }
-		[ForeignKey(nameof(DificultyId))]
-		public Dificulty? Dificulty { get; set; }
+		public int DifficultyId { get; set; }
+		[ForeignKey(nameof(DifficultyId))]
+		public Difficulty? Difficulty { get; set; }
 
 		public int CuisineId { get; set; }
 		[ForeignKey(nameof(CuisineId))]

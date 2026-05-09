@@ -1,4 +1,5 @@
-﻿using GrandmasRecipes.Infrastructure.Data;
+﻿using GrandmasRecipes.Domain.Entities;
+using GrandmasRecipes.Infrastructure.Data;
 using GrandmasRecipes.Infrastructure.Interfaces;
 
 namespace GrandmasRecipes.Infrastructure.Repositories
@@ -7,30 +8,35 @@ namespace GrandmasRecipes.Infrastructure.Repositories
     {
         private readonly ApplicationContext _context;
 
-        public IRecipeRepository Recipes { get; }
+		public IGenericRepository<Category> Categories { get; }
+		public IGenericRepository<Cuisine> Cuisines { get; }
+		public IGenericRepository<Difficulty> Difficulties { get; }
+		public IGenericRepository<Product> Products { get; }
+		public IRecipeRepository Recipes { get; }
         public IAccountRepository Accounts { get; }
-        public ICategoryRepository Categories { get; }
-        public ICuisineRepository Cuisines { get; }
-        public IProductRepository Products { get; }
         public IReviewRepository Reviews { get; }
         public IIngredientRepository Ingredients { get; }
 
-        public UnitOfWork(
+        public UnitOfWork
+        (
             ApplicationContext context,
-            IRecipeRepository recipes,
+			GenericRepository<Category> categories,
+			GenericRepository<Cuisine> cuisines,
+			GenericRepository<Difficulty> difficulties,
+			GenericRepository<Product> products,
+			IRecipeRepository recipes,
             IAccountRepository accounts,
-            ICategoryRepository categories,
-            ICuisineRepository cuisines,
-            IProductRepository products,
             IReviewRepository reviews,
-            IIngredientRepository ingredients)
+            IIngredientRepository ingredients
+        )
         {
             _context = context;
-            Recipes = recipes;
+			Categories = categories;
+			Cuisines = cuisines;
+			Difficulties = difficulties;
+			Products = products;
+			Recipes = recipes;
             Accounts = accounts;
-            Categories = categories;
-            Cuisines = cuisines;
-            Products = products;
             Reviews = reviews;
             Ingredients = ingredients;
         }

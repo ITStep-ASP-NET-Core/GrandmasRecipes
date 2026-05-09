@@ -15,11 +15,29 @@ namespace GrandmasRecipes.Infrastructure.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        public IQueryable<T> GetAllAsync() => _dbSet.AsNoTracking();
-        public async Task<T?> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
-        public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
-        public void UpdateAsync(T entity) => _dbSet.Update(entity);
-        public void DeleteAsync(T entity) => _dbSet.Remove(entity);
-        public async Task SaveAsync() => await _context.SaveChangesAsync();
-    }
+		public async Task<ICollection<T>> GetAllAsync ( )
+		{
+			return await _dbSet.AsNoTracking().ToListAsync();
+		}
+
+		public async Task<T?> GetByIdAsync ( int id )
+		{
+			return await _dbSet.FindAsync(id);
+		}
+
+		public async Task AddAsync ( T obj )
+		{
+			await _dbSet.AddAsync(obj);
+		}
+
+		public void Update ( T obj )
+		{
+			_dbSet.Update(obj);
+		}
+
+		public void Delete ( T obj )
+		{
+			_dbSet.Remove(obj);
+		}
+	}
 }

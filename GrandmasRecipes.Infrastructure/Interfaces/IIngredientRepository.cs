@@ -4,8 +4,10 @@ namespace GrandmasRecipes.Infrastructure.Interfaces
 {
     public interface IIngredientRepository
     {
-        Task<IEnumerable<Ingredient>> GetByRecipeIdAsync(Guid recipeId);
-        Task AddAsync(Ingredient ingredient);
-        Task SaveChangesAsync();
-    }
+        Task<ICollection<Ingredient>> GetIngredientsByRecipeIdAsync ( Guid recipeId );
+
+        Task AddIngredientAsync ( Ingredient ingredient );
+		void UpdateIngredient ( Ingredient ingredient );
+		void DeleteIngredient ( Ingredient ingredient );
+	}
 }

@@ -18,7 +18,7 @@ namespace GrandmasRecipes.Infrastructure.Data
 		public DbSet<Review> Reviews { get; set; }
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Cuisine> Cuisines { get; set; }
-		public DbSet<Dificulty> Dificulties { get; set; }
+		public DbSet<Difficulty> Dificulties { get; set; }
 		public DbSet<Like> Likes { get; set; }
 
 		protected override void OnModelCreating ( ModelBuilder modelBuilder )
@@ -50,9 +50,9 @@ namespace GrandmasRecipes.Infrastructure.Data
 					  .HasForeignKey(r => r.AuthorId)
 					  .OnDelete(DeleteBehavior.SetNull);
 
-				entity.HasOne(r => r.Dificulty)
+				entity.HasOne(r => r.Difficulty)
 					  .WithMany(d => d.Recipes)
-					  .HasForeignKey(r => r.DificultyId)
+					  .HasForeignKey(r => r.DifficultyId)
 					  .OnDelete(DeleteBehavior.Restrict);
 
 				entity.HasOne(r => r.Cuisine)
@@ -106,7 +106,7 @@ namespace GrandmasRecipes.Infrastructure.Data
 				entity.HasKey(p => p.Id);
 			});
 
-			modelBuilder.Entity<Dificulty>(entity =>
+			modelBuilder.Entity<Difficulty>(entity =>
 			{
 				entity.HasKey(d => d.Id);
 			});

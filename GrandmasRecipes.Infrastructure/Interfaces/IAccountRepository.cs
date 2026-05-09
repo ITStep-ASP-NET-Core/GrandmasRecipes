@@ -4,11 +4,10 @@ namespace GrandmasRecipes.Infrastructure.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<IEnumerable<Account>> GetAllAsync();
-        Task<Account?> GetByIdAsync(Guid id);
-        Task AddAsync(Account account);
-        void UpdateAsync(Account account);
-        void DeleteAsync(Account account);
-        Task SaveChangesAsync();
+        Task<Account?> GetAccountByIdAsync ( Guid id );
+
+        Task AddAccountAsync ( Account account );
+		void UpdateAccount ( Account account );
+		void DeleteAccount ( Account account );
     }
 }

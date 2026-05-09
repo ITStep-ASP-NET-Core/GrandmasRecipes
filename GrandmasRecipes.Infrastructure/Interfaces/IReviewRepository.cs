@@ -1,16 +1,14 @@
-﻿using GrandmasRecipes.Domain.Entities;
+﻿using GrandmasRecipes.Application.Common;
+using GrandmasRecipes.Domain.Entities;
 
 namespace GrandmasRecipes.Infrastructure.Interfaces
 {
     public interface IReviewRepository
     {
-        IQueryable<Review> GetAllAsync();
-        Task<Review?> GetByIdAsync(int id);
-        IQueryable<Review> GetByRecipeIdAsync(Guid recipeId);
-        IQueryable<Review> GetByAccountIdAsync(Guid accountId);
-        Task AddAsync(Review entity);
-        void UpdateAsync(Review entity);
-        void DeleteAsync(Review entity);
-        Task SaveChangesAsync();
-    }
+		Task<PagedResult<Review>> GetReviewsByRecipeIdAsync ( Guid recipeId, int page, int pageSize = 10 );
+
+		Task AddReviewAsync ( Review review );
+		void UpdateReview ( Review review );
+		void DeleteReview ( Review review );
+	}
 }

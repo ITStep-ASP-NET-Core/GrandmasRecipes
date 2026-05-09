@@ -5,14 +5,13 @@ namespace GrandmasRecipes.Infrastructure.Interfaces
 {
     public interface IRecipeRepository
     {
-        IQueryable<Recipe> GetAllAsync();
-        Task<Recipe?> GetByIdAsync(Guid id);
-        Task AddAsync(Recipe entity);
-        void UpdateAsync(Recipe entity);
-        void DeleteAsync(Recipe entity);
-        Task SaveChangesAsync();
-        IQueryable<Recipe> GetRecipesByAuthorAsync(Guid authorId);
-        Task<PagedResult<Recipe>> GetByLikesPagedAsync(int page, int pageSize = 20);
-        Task<Recipe?> GetRecipeDetailsAsync(Guid id);
+		Task<PagedResult<Recipe>> GetRecipesByLikesAsync ( int page, int pageSize = 10 );
+		Task<PagedResult<Recipe>> GetRecipesByAuthorAsync ( Guid authorId, int page, int pageSize = 10 );
+
+		Task<Recipe?> GetRecipeByIdWithAllAsync ( Guid id );
+
+        Task AddRecipeAsync ( Recipe recipe );
+		void UpdateRecipe ( Recipe recipe );
+		void DeleteRecipe ( Recipe recipe );
     }
 }

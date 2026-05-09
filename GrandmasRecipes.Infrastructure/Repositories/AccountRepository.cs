@@ -1,7 +1,6 @@
 ﻿using GrandmasRecipes.Domain.Entities;
 using GrandmasRecipes.Infrastructure.Data;
 using GrandmasRecipes.Infrastructure.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace GrandmasRecipes.Infrastructure.Repositories
 {
@@ -14,16 +13,24 @@ namespace GrandmasRecipes.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Account>> GetAllAsync() => await _context.Accounts.ToListAsync();
+		public async Task<Account?> GetAccountByIdAsync ( Guid id )
+		{
+			return await _context.Accounts.FindAsync(id);
+		}
 
-        public async Task<Account?> GetByIdAsync(Guid id) => await _context.Accounts.FindAsync(id);
+		public async Task AddAccountAsync ( Account account )
+		{
+			await _context.Accounts.AddAsync(account);
+		}
 
-        public async Task AddAsync(Account account) => await _context.Accounts.AddAsync(account);
+		public void UpdateAccount ( Account account )
+		{
+			_context.Accounts.Update(account);
+		}
 
-        public void Update(Account account) => _context.Accounts.Update(account);
-
-        public void Delete(Account account) => _context.Accounts.Remove(account);
-
-        public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
-    }
+		public void DeleteAccount ( Account account )
+		{
+			_context.Accounts.Remove(account);
+		}
+	}
 }
