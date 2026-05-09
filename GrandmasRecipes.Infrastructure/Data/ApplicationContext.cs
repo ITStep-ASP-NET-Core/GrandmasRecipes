@@ -8,6 +8,7 @@ namespace GrandmasRecipes.Infrastructure.Data
 		public ApplicationContext ( DbContextOptions<ApplicationContext> options ) : base(options) { }
 
 		public DbSet<Account> Accounts { get; set; }
+		public DbSet<RefreshToken> RefreshTokens { get; set; }
 		public DbSet<User> Users { get; set; }
 		public DbSet<Admin> Admins { get; set; }
 		public DbSet<Recipe> Recipes { get; set; }

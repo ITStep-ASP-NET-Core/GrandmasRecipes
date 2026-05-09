@@ -10,6 +10,8 @@ namespace GrandmasRecipes.Domain.Entities
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
 
+		public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
+
 		public ICollection<Recipe> Recipes { get; set; } = [];
 
 		public ICollection<Like> Liked { get; set; } = [];
