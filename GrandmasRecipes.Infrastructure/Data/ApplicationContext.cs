@@ -122,9 +122,6 @@ namespace GrandmasRecipes.Infrastructure.Data
 			modelBuilder.Entity<Cuisine>(entity =>
 			{
 				entity.HasKey(c => c.Id);
-
-				entity.HasMany(c => c.Recipes)
-					  .WithMany();
 			});
 
 			modelBuilder.Entity<Like>(entity =>

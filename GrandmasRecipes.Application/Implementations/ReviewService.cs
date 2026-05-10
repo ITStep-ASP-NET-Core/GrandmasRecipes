@@ -17,7 +17,7 @@ namespace GrandmasRecipes.Application.Implementations
 
         public async Task<PagedResult<ReviewDto>> GetReviewsAsync(Guid recipeId, int page)
         {
-            var result = await _uow.Reviews.GetReviewsByRecipeIdAsync(recipeId, page);
+            var result = await _uow.Reviews.GetReviewsByRecipeIdAsync(recipeId, page >= 0 ? page : 0);
 
             return new PagedResult<ReviewDto>
             {

@@ -1,4 +1,5 @@
 using GrandmasRecipes.Application.DTO.Common;
+using GrandmasRecipes.Application.DTO.Cuisine;
 using GrandmasRecipes.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,9 @@ namespace GrandmasRecipes.WebApi.Controllers
     [Route("api/[controller]")]
     public class CuisinesController : ControllerBase
     {
-        private readonly IService<LookupDto> _cuisineService;
+        private readonly IService<CuisineDto> _cuisineService;
 
-        public CuisinesController(IService<LookupDto> cuisineService)
+        public CuisinesController(IService<CuisineDto> cuisineService)
         {
             _cuisineService = cuisineService;
         }
@@ -26,12 +27,12 @@ namespace GrandmasRecipes.WebApi.Controllers
         public async Task<IActionResult> GetAllSummary()
         {
             var result = await _cuisineService.GetAllAsync();
-            var summary = result.Select(x => new LookupSummaryDto { Id = x.Id, Name = x.Name });
+            var summary = result.Select(x => new CuisineSummaryDto { Id = x.Id, Name = x.Name });
             return Ok(summary);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] LookupDto dto)
+        public async Task<IActionResult> Create([FromBody] CuisineDto dto)
         {
             await _cuisineService.AddAsync(dto);
             return Ok();

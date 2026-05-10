@@ -1,4 +1,5 @@
 using GrandmasRecipes.Application.DTO.Common;
+using GrandmasRecipes.Application.DTO.Difficulty;
 using GrandmasRecipes.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,9 @@ namespace GrandmasRecipes.WebApi.Controllers
     [Route("api/[controller]")]
     public class DifficultiesController : ControllerBase
     {
-        private readonly IService<LookupDto> _difficultyService;
+        private readonly IService<DifficultyDto> _difficultyService;
 
-        public DifficultiesController(IService<LookupDto> difficultyService)
+        public DifficultiesController(IService<DifficultyDto> difficultyService)
         {
             _difficultyService = difficultyService;
         }
@@ -26,12 +27,12 @@ namespace GrandmasRecipes.WebApi.Controllers
         public async Task<IActionResult> GetAllSummary()
         {
             var result = await _difficultyService.GetAllAsync();
-            var summary = result.Select(x => new LookupSummaryDto { Id = x.Id, Name = x.Name });
+            var summary = result.Select(x => new DifficultySummaryDto { Id = x.Id, Name = x.Name });
             return Ok(summary);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] LookupDto dto)
+        public async Task<IActionResult> Create([FromBody] DifficultyDto dto)
         {
             await _difficultyService.AddAsync(dto);
             return Ok();

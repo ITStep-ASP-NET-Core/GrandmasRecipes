@@ -38,13 +38,13 @@ namespace GrandmasRecipes.Application.Implementations
 
         public async Task<PagedResult<RecipePreviewDto>> GetRecipesByAuthorAsync(Guid authorId, int page)
         {
-            var result = await _recipeRepository.GetRecipesByAuthorAsync(authorId, page);
+            var result = await _recipeRepository.GetRecipesByAuthorAsync(authorId, page >= 0 ? page : 0);
             return MapToPreviewPaged(result, null);
         }
 
         public async Task<PagedResult<RecipePreviewDto>> GetRecipesByLikedAsync(Guid userId, int page)
         {
-            var result = await _recipeRepository.GetRecipesByLikesAsync(page);
+            var result = await _recipeRepository.GetRecipesByLikesAsync(page >= 0 ? page : 0);
             return MapToPreviewPaged(result, userId);
         }
 

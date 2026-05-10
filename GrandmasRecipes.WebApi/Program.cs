@@ -1,4 +1,5 @@
 using GrandmasRecipes.Application.ServiceProviderExtensions;
+using GrandmasRecipes.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -50,6 +51,14 @@ var app = builder.Build();
 
 if(app.Environment.IsDevelopment())
 {
+	using(var scope = app.Services.CreateScope())
+	{
+		var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+		context.Database.EnsureDeleted();
+		context.Database.EnsureCreated();
+		DbInitializer.Initialize(context);
+	}
+
 	app.MapOpenApi();
 	app.MapScalarApiReference();
 }

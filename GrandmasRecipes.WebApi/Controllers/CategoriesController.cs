@@ -1,3 +1,4 @@
+using GrandmasRecipes.Application.DTO.Category;
 using GrandmasRecipes.Application.DTO.Common;
 using GrandmasRecipes.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +9,9 @@ namespace GrandmasRecipes.WebApi.Controllers
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly IService<LookupDto> _categoryService;
+        private readonly IService<CategoryDto> _categoryService;
 
-        public CategoriesController(IService<LookupDto> categoryService)
+        public CategoriesController(IService<CategoryDto> categoryService)
         {
             _categoryService = categoryService;
         }
@@ -26,12 +27,12 @@ namespace GrandmasRecipes.WebApi.Controllers
         public async Task<IActionResult> GetAllSummary()
         {
             var result = await _categoryService.GetAllAsync();
-            var summary = result.Select(x => new LookupSummaryDto { Id = x.Id, Name = x.Name });
+            var summary = result.Select(x => new CategorySummaryDto { Id = x.Id, Name = x.Name });
             return Ok(summary);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] LookupDto dto)
+        public async Task<IActionResult> Create([FromBody] CategoryDto dto)
         {
             await _categoryService.AddAsync(dto);
             return Ok();

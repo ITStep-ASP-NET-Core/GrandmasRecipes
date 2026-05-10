@@ -1,4 +1,5 @@
-﻿using GrandmasRecipes.Infrastructure.Interfaces;
+﻿using GrandmasRecipes.Domain.Entities;
+using GrandmasRecipes.Infrastructure.Interfaces;
 using GrandmasRecipes.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,8 @@ namespace GrandmasRecipes.Application.ServiceProviderExtensions
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped<IIngredientRepository, IngredientRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-        }
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
+		}
     }
 }

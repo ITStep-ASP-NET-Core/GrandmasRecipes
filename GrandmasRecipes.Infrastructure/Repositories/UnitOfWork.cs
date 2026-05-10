@@ -21,10 +21,10 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 		public UnitOfWork
         (
             ApplicationContext context,
-			GenericRepository<Category> categories,
-			GenericRepository<Cuisine> cuisines,
-			GenericRepository<Difficulty> difficulties,
-			GenericRepository<Product> products,
+			IGenericRepository<Category> categories,
+			IGenericRepository<Cuisine> cuisines,
+			IGenericRepository<Difficulty> difficulties,
+			IGenericRepository<Product> products,
 			IRecipeRepository recipes,
             IAccountRepository accounts,
             IReviewRepository reviews,

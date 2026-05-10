@@ -7,9 +7,6 @@ namespace GrandmasRecipes.Infrastructure.Data
 	{
 		public static void Initialize ( ApplicationContext context )
 		{
-			context.Database.EnsureDeleted();
-			context.Database.EnsureCreated();
-
 			if(context.Recipes.Any())
 				return;
 
