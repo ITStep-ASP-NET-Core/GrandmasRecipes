@@ -5,8 +5,9 @@ namespace GrandmasRecipes.Infrastructure.Interfaces
     public interface IAccountRepository
     {
         Task<Account?> GetAccountByIdAsync ( Guid id );
+        Task<Account?> GetAccountByEmailAsync ( string email );
 
-        Task AddAccountAsync ( Account account );
+		Task AddAccountAsync ( Account account );
 		void UpdateAccount ( Account account );
 		void DeleteAccount ( Account account );
     }

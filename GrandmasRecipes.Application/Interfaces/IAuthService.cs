@@ -4,9 +4,9 @@ namespace GrandmasRecipes.Application.Interfaces
 {
 	public interface IAuthService
 	{
-		Task<AuthResponseDTO> RegisterAsync ( RegisterDto dto );
-		Task<AuthResponseDTO> LoginAsync ( LoginDto dto );
-		Task<AuthResponseDTO> RefreshAsync ( string refreshToken );
+		Task<AuthResponseDto> RegisterAsync ( RegisterDto registerDto );
+		Task<AuthResponseDto> LoginAsync ( LoginDto loginDto );
+		Task<AuthResponseDto> RefreshAsync ( string refreshToken );
 		Task LogoutAsync ( string refreshToken );
 	}
 }

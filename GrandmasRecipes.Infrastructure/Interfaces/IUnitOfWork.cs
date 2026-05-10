@@ -12,7 +12,8 @@ namespace GrandmasRecipes.Infrastructure.Interfaces
         IAccountRepository Accounts { get; }
         IReviewRepository Reviews { get; }
         IIngredientRepository Ingredients { get; }
+        IRefreshTokenRepository RefreshTokens { get; }
 
-        Task SaveChangesAsync();
+		Task SaveChangesAsync();
     }
 }

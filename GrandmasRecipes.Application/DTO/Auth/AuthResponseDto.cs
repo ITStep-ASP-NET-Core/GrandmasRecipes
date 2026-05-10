@@ -1,6 +1,6 @@
 ﻿namespace GrandmasRecipes.Application.DTO.Auth
 {
-	public class AuthResponseDTO
+	public class AuthResponseDto
 	{
 		public string AccessToken { get; set; } = string.Empty;
 		public string RefreshToken { get; set; } = string.Empty;

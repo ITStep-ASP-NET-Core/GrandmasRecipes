@@ -16,8 +16,9 @@ namespace GrandmasRecipes.Infrastructure.Repositories
         public IAccountRepository Accounts { get; }
         public IReviewRepository Reviews { get; }
         public IIngredientRepository Ingredients { get; }
+		public IRefreshTokenRepository RefreshTokens { get; }
 
-        public UnitOfWork
+		public UnitOfWork
         (
             ApplicationContext context,
 			GenericRepository<Category> categories,
@@ -27,8 +28,10 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			IRecipeRepository recipes,
             IAccountRepository accounts,
             IReviewRepository reviews,
-            IIngredientRepository ingredients
-        )
+            IIngredientRepository ingredients,
+			IRefreshTokenRepository refreshTokens
+
+		)
         {
             _context = context;
 			Categories = categories;
@@ -39,7 +42,8 @@ namespace GrandmasRecipes.Infrastructure.Repositories
             Accounts = accounts;
             Reviews = reviews;
             Ingredients = ingredients;
-        }
+			RefreshTokens = refreshTokens;
+		}
 
         public async Task SaveChangesAsync()
         {

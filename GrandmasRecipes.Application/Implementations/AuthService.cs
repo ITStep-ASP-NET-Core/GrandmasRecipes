@@ -11,14 +11,22 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace GrandmasRecipes.Application.Implementations
 {
-	public class AuthService (
-		IAccountRepository accountRepository,
-		IRefreshTokenRepository refreshTokenRepository,
-		IConfiguration configuration ) : IAuthService
+	public class AuthService : IAuthService
 	{
-		public async Task<AuthResponseDTO> RegisterAsync ( RegisterDto dto )
+		private readonly IUnitOfWork _uow;
+		private readonly IPasswordHasher _passwordHasher;
+		private readonly IConfiguration _configuration;
+
+		public AuthService ( IUnitOfWork uow, IPasswordHasher passwordHasher, IConfiguration configuration )
 		{
-			var existing = await accountRepository.GetByEmailAsync(dto.Email);
+			_uow = uow;
+			_passwordHasher = passwordHasher;
+			_configuration = configuration;
+		}
+
+		public async Task<AuthResponseDto> RegisterAsync ( RegisterDto dto )
+		{
+			var existing = await _uow.Accounts.GetAccountByEmailAsync(dto.Email);
 			if(existing is not null)
 				throw new InvalidOperationException("Email already in use.");
 
@@ -27,53 +35,53 @@ namespace GrandmasRecipes.Application.Implementations
 				Id = Guid.NewGuid(),
 				Nickname = dto.Nickname,
 				Email = dto.Email,
-				PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+				PasswordHash = _passwordHasher.HashPassword(dto.Password),
 				RegisteredAt = DateTime.UtcNow
 			};
 
-			await accountRepository.CreateAsync(user);
-			await accountRepository.SaveChangesAsync();
+			await _uow.Accounts.AddAccountAsync(user);
+			await _uow.SaveChangesAsync();
 
 			return await GenerateAuthResponseAsync(user);
 		}
 
-		public async Task<AuthResponseDTO> LoginAsync ( LoginDto dto )
+		public async Task<AuthResponseDto> LoginAsync ( LoginDto dto )
 		{
-			var account = await accountRepository.GetByEmailAsync(dto.Email);
-			if(account is null || !BCrypt.Net.BCrypt.Verify(dto.Password, account.PasswordHash))
+			var account = await _uow.Accounts.GetAccountByEmailAsync(dto.Email);
+			if(account is null || !_passwordHasher.VerifyPassword(dto.Password, account.PasswordHash))
 				throw new UnauthorizedAccessException("Invalid email or password.");
 
 			return await GenerateAuthResponseAsync(account);
 		}
 
-		public async Task<AuthResponseDTO> RefreshAsync ( string refreshToken )
+		public async Task<AuthResponseDto> RefreshAsync ( string refreshToken )
 		{
-			var token = await refreshTokenRepository.GetByTokenAsync(refreshToken);
+			var token = await _uow.RefreshTokens.GetByTokenAsync(refreshToken);
 			if(token is null || token.ExpiresAt < DateTime.UtcNow)
 				throw new UnauthorizedAccessException("Invalid or expired refresh token.");
 
-			await refreshTokenRepository.RevokeAsync(token);
-			await refreshTokenRepository.SaveChangesAsync();
+			await _uow.RefreshTokens.RevokeAsync(token);
+			await _uow.SaveChangesAsync();
 
 			return await GenerateAuthResponseAsync(token.Account!);
 		}
 
 		public async Task LogoutAsync ( string refreshToken )
 		{
-			var token = await refreshTokenRepository.GetByTokenAsync(refreshToken);
+			var token = await _uow.RefreshTokens.GetByTokenAsync(refreshToken);
 			if(token is null)
 				return;
 
-			await refreshTokenRepository.RevokeAsync(token);
-			await refreshTokenRepository.SaveChangesAsync();
+			await _uow.RefreshTokens.RevokeAsync(token);
+			await _uow.SaveChangesAsync();
 		}
 
-		private async Task<AuthResponseDTO> GenerateAuthResponseAsync ( Account account )
+		private async Task<AuthResponseDto> GenerateAuthResponseAsync ( Account account )
 		{
 			var accessToken = GenerateAccessToken(account);
 			var refreshToken = await CreateRefreshTokenAsync(account.Id);
 
-			return new AuthResponseDTO
+			return new AuthResponseDto
 			{
 				AccessToken = accessToken,
 				RefreshToken = refreshToken,
@@ -85,7 +93,7 @@ namespace GrandmasRecipes.Application.Implementations
 		private string GenerateAccessToken ( Account account )
 		{
 			var key = new SymmetricSecurityKey(
-				Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]!));
+				Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]!));
 
 			var claims = new[]
 			{
@@ -95,8 +103,8 @@ namespace GrandmasRecipes.Application.Implementations
 			};
 
 			var token = new JwtSecurityToken(
-				issuer: configuration["Jwt:Issuer"],
-				audience: configuration["Jwt:Audience"],
+				issuer: _configuration["Jwt:Issuer"],
+				audience: _configuration["Jwt:Audience"],
 				claims: claims,
 				expires: DateTime.UtcNow.AddMinutes(15),
 				signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
@@ -116,8 +124,8 @@ namespace GrandmasRecipes.Application.Implementations
 				IsRevoked = false
 			};
 
-			await refreshTokenRepository.CreateAsync(refreshToken);
-			await refreshTokenRepository.SaveChangesAsync();
+			await _uow.RefreshTokens.CreateAsync(refreshToken);
+			await _uow.SaveChangesAsync();
 
 			return tokenValue;
 		}

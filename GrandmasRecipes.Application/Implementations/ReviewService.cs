@@ -48,17 +48,5 @@ namespace GrandmasRecipes.Application.Implementations
             await _uow.SaveChangesAsync();
             return Result.Ok();
         }
-
-        public async Task<Result> EditReviewAsync(ReviewEditDto dto)
-        {
-            // IReviewRepository не имеет GetById — нужно добавить метод
-            return Result.Fail("GetReviewByIdAsync не реализован в репозитории");
-        }
-
-        public async Task<Result> DeleteReviewAsync(int reviewId)
-        {
-            // IReviewRepository не имеет GetById — нужно добавить метод
-            return Result.Fail("GetReviewByIdAsync не реализован в репозитории");
-        }
     }
 }
