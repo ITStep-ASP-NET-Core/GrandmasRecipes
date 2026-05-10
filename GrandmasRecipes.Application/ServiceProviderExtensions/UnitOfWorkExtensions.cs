@@ -24,6 +24,8 @@ namespace GrandmasRecipes.Application.ServiceProviderExtensions
 
             // Сервисы
             services.AddScoped<IRecipeService, RecipeService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IService<CategoryDto>, CategoryService>();
             services.AddScoped<IService<CuisineDto>, CuisineService>();
             services.AddScoped<IService<DifficultyDto>, DifficultyService>();

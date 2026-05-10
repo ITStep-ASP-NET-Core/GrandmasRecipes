@@ -8,7 +8,5 @@ namespace GrandmasRecipes.Application.Interfaces
         Task<PagedResult<ReviewDto>> GetReviewsAsync( Guid recipeId, int page );
 
 		Task<Result> CreateReviewAsync ( ReviewCreateDto ReviewDto );
-		Task<Result> EditReviewAsync ( ReviewEditDto ReviewDto );
-		Task<Result> DeleteReviewAsync ( int reviewId );
 	}
 }
