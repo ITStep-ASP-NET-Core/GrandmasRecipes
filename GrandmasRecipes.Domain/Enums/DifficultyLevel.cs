@@ -1,11 +1,19 @@
-﻿namespace GrandmasRecipes.Domain.Enums
+﻿using System.ComponentModel;
+
+namespace GrandmasRecipes.Domain.Enums
 {
 	public enum DifficultyLevel
 	{
-		None = 0,
-		Easy = 1,
-		Normal = 2,
-		Dificult = 3,
-		GordonRamsay = 4,
+		[Description("Easy")]
+		Easy = 0,
+
+		[Description("Normal")]
+		Normal = 1,
+
+		[Description("Difficult")]
+		Difficult = 2,
+
+		[Description("Gordon Ramsay")]
+		GordonRamsay = 3,
 	}
 }

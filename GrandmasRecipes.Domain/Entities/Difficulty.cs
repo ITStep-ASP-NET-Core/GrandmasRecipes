@@ -12,8 +12,6 @@ namespace GrandmasRecipes.Domain.Entities
 
 		public string? ImageUrl { get; set; }
 
-		public DifficultyLevel Level { get; set; } = DifficultyLevel.None;
-
 		public ICollection<Recipe> Recipes { get; set; } = [];
 
 	}

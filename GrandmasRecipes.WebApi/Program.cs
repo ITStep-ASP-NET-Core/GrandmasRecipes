@@ -56,7 +56,7 @@ if(app.Environment.IsDevelopment())
 		var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
 		context.Database.EnsureDeleted();
 		context.Database.EnsureCreated();
-		DbInitializer.Initialize(context);
+		await DbInitializer.InitializeAsync(context);
 	}
 
 	app.MapOpenApi();

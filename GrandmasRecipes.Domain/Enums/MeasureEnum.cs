@@ -2,10 +2,8 @@
 
 namespace GrandmasRecipes.Domain.Enums
 {
-	public enum Measure
+	public enum MeasureEnum
 	{
-		None,
-
 		[Description("ml")]
 		Milliliters,
 

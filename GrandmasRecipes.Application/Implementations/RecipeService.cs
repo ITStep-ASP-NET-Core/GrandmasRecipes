@@ -29,14 +29,18 @@ namespace GrandmasRecipes.Application.Implementations
             return MapToPreviewPaged(result, null);
         }
 
-        public async Task<PagedResult<RecipePreviewDto>> GetRecipesByFiltersAsync(RecipeFilterDto filter, int page)
-        {
-            // фильтрация будет добавлена когда репозиторий поддержит её
-            var result = await _recipeRepository.GetRecipesByLikesAsync(page);
-            return MapToPreviewPaged(result, null);
-        }
+		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByFiltersAsync ( RecipeFilterDto filter, int page )
+		{
+			var result = await _recipeRepository.GetRecipesByFiltersAsync(
+				filter.CategoryIds,
+				filter.CuisineIds,
+				filter.DifficultyIds,
+				filter.ProductIds,
+				page >= 0 ? page : 0);
+			return MapToPreviewPaged(result, null);
+		}
 
-        public async Task<PagedResult<RecipePreviewDto>> GetRecipesByAuthorAsync(Guid authorId, int page)
+		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByAuthorAsync(Guid authorId, int page)
         {
             var result = await _recipeRepository.GetRecipesByAuthorAsync(authorId, page >= 0 ? page : 0);
             return MapToPreviewPaged(result, null);
@@ -66,7 +70,7 @@ namespace GrandmasRecipes.Application.Implementations
                 Calories = dto.Calories,
                 Likes = 0,
                 PublishedDate = DateTime.UtcNow,
-                AuthorId = Guid.NewGuid(), // заменить на реального пользователя
+                AuthorId = dto.AuthorId,
                 DifficultyId= dto.DifficultyId,
                 CuisineId = dto.CuisineId,
             };
@@ -102,8 +106,6 @@ namespace GrandmasRecipes.Application.Implementations
             await _uow.SaveChangesAsync();
             return Result.Ok();
         }
-
-        // ── Маппинг ──────────────────────────────────────────────
 
         private static PagedResult<RecipePreviewDto> MapToPreviewPaged(PagedResult<Recipe> source, Guid? userId)
         {
@@ -170,8 +172,9 @@ namespace GrandmasRecipes.Application.Implementations
                 {
                     ProductId = i.ProductId,
                     ProductName = i.Product?.Name ?? string.Empty,
-                    Amount = (int)i.Quantity,
-                    Measure = string.Empty
+					MeasureId = i.MeasureId,
+					Measure = i.Measure?.Name ?? string.Empty,
+                    Amount = (int)i.Quantity
                 }).ToList(),
 
                 Steps = r.Steps.OrderBy(s => s.Number).Select(s => new StepDto

@@ -13,12 +13,13 @@ namespace GrandmasRecipes.Infrastructure.Data
 		public DbSet<Admin> Admins { get; set; }
 		public DbSet<Recipe> Recipes { get; set; }
 		public DbSet<Ingredient> Ingredients { get; set; }
+		public DbSet<Measure> Measures { get; set; }
 		public DbSet<Product> Products { get; set; }
 		public DbSet<Step> Steps { get; set; }
 		public DbSet<Review> Reviews { get; set; }
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Cuisine> Cuisines { get; set; }
-		public DbSet<Difficulty> Dificulties { get; set; }
+		public DbSet<Difficulty> Difficulties { get; set; }
 		public DbSet<Like> Likes { get; set; }
 
 		protected override void OnModelCreating ( ModelBuilder modelBuilder )
@@ -84,6 +85,16 @@ namespace GrandmasRecipes.Infrastructure.Data
 					  .WithMany()
 					  .HasForeignKey(i => i.ProductId)
 					  .OnDelete(DeleteBehavior.Restrict);
+
+				entity.HasOne(i => i.Measure)
+					  .WithMany()
+					  .HasForeignKey(i => i.MeasureId)
+					  .OnDelete(DeleteBehavior.Restrict);
+			});
+
+			modelBuilder.Entity<Measure>(entity =>
+			{
+				entity.HasKey(s => s.Id);
 			});
 
 			modelBuilder.Entity<Step>(entity =>

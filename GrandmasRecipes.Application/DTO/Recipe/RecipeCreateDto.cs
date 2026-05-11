@@ -11,7 +11,7 @@ namespace GrandmasRecipes.Application.DTO.Recipe
 		public int Calories { get; set; }
 		public int Likes { get; set; }
 
-		public int AuthorId { get; set; }
+		public Guid AuthorId { get; set; }
 		public int DifficultyId { get; set; }
 		public int CuisineId { get; set; }
 

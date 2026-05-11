@@ -19,8 +19,13 @@ namespace GrandmasRecipes.Domain.Entities
         [ForeignKey(nameof(ProductId))]
         public Product? Product { get; set; }
 
-        public double Quantity { get; set; }
+		public int MeasureId { get; set; }
 
-        public Measure Measure { get; set; } = Measure.None;
+		[ForeignKey(nameof(MeasureId))]
+		public Measure? Measure { get; set; }
+
+		public double Quantity { get; set; }
+
+        
 	}
 }

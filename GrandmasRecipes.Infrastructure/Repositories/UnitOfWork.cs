@@ -12,6 +12,7 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 		public IGenericRepository<Cuisine> Cuisines { get; }
 		public IGenericRepository<Difficulty> Difficulties { get; }
 		public IGenericRepository<Product> Products { get; }
+		public IGenericRepository<Measure> Measures { get; }
 		public IRecipeRepository Recipes { get; }
         public IAccountRepository Accounts { get; }
         public IReviewRepository Reviews { get; }
@@ -25,6 +26,7 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			IGenericRepository<Cuisine> cuisines,
 			IGenericRepository<Difficulty> difficulties,
 			IGenericRepository<Product> products,
+			IGenericRepository<Measure> measures,
 			IRecipeRepository recipes,
             IAccountRepository accounts,
             IReviewRepository reviews,
@@ -38,6 +40,7 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			Cuisines = cuisines;
 			Difficulties = difficulties;
 			Products = products;
+			Measures = measures;
 			Recipes = recipes;
             Accounts = accounts;
             Reviews = reviews;

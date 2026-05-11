@@ -8,6 +8,7 @@ namespace GrandmasRecipes.Infrastructure.Interfaces
         IGenericRepository<Cuisine> Cuisines { get; }
         IGenericRepository<Difficulty> Difficulties { get; }
         IGenericRepository<Product> Products { get; }
+        IGenericRepository<Measure> Measures { get; }
 		IRecipeRepository Recipes { get; }
         IAccountRepository Accounts { get; }
         IReviewRepository Reviews { get; }

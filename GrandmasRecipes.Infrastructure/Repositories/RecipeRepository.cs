@@ -55,6 +55,45 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			};
 		}
 
+		public async Task<PagedResult<Recipe>> GetRecipesByFiltersAsync (
+			ICollection<int>? categoryIds,
+			ICollection<int>? cuisineIds,
+			ICollection<int>? difficultyIds,
+			ICollection<int>? productIds,
+			int page,
+			int pageSize = 10 )
+		{
+			var query = _context.Recipes.AsQueryable();
+
+			if(categoryIds != null && categoryIds.Count > 0)
+				query = query.Where(r => r.Categories.Any(c => categoryIds.Contains(c.Id)));
+
+			if(cuisineIds != null && cuisineIds.Count > 0)
+				query = query.Where(r => cuisineIds.Contains(r.CuisineId));
+
+			if(difficultyIds != null && difficultyIds.Count > 0)
+				query = query.Where(r => difficultyIds.Contains(r.DifficultyId));
+
+			if(productIds != null && productIds.Count > 0)
+				query = query.Where(r => r.Ingredients.Any(i => productIds.Contains(i.ProductId)));
+
+			var items = await query
+				.OrderByDescending(r => r.Likes)
+				.Skip(page * pageSize)
+				.Take(pageSize)
+				.Include(r => r.Author)
+				.AsNoTracking()
+				.ToListAsync();
+
+			return new PagedResult<Recipe>
+			{
+				Items = items,
+				PageNumber = page,
+				PageSize = pageSize,
+				TotalCount = await query.CountAsync()
+			};
+		}
+
 		public async Task<Recipe?> GetRecipeByIdWithAllAsync ( Guid id )
 		{
 			return await _context.Recipes
@@ -64,6 +103,8 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 				.Include(r => r.Categories)
 				.Include(r => r.Ingredients)
 					.ThenInclude(i => i.Product)
+				.Include(r => r.Ingredients)
+					.ThenInclude(i => i.Measure)
 				.Include(r => r.Steps)
 					.ThenInclude(s => s.SubSteps)
 				.Include(r => r.Liked)
