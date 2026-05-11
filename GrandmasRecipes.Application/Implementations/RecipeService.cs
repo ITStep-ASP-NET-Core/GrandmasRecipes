@@ -15,21 +15,23 @@ namespace GrandmasRecipes.Application.Implementations
     public class RecipeService : IRecipeService
     {
         private readonly IRecipeRepository _recipeRepository;
-        private readonly IUnitOfWork _uow;
+        private readonly ILikeRepository _likeRepository;
+		private readonly IUnitOfWork _uow;
 
-        public RecipeService(IRecipeRepository recipeRepository, IUnitOfWork uow)
+        public RecipeService(IRecipeRepository recipeRepository, ILikeRepository likeRepository, IUnitOfWork uow)
         {
             _recipeRepository = recipeRepository;
-            _uow = uow;
+			_likeRepository = likeRepository;
+			_uow = uow;
         }
 
-        public async Task<PagedResult<RecipePreviewDto>> GetRecipesAsync(int page)
-        {
-            var result = await _recipeRepository.GetRecipesByLikesAsync(page);
-            return MapToPreviewPaged(result, null);
-        }
+		public async Task<PagedResult<RecipePreviewDto>> GetRecipesAsync ( int page, Guid? userId = null )
+		{
+			var result = await _recipeRepository.GetRecipesByLikesAsync(page);
+			return await MapToPreviewPaged(result, userId);
+		}
 
-		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByFiltersAsync ( RecipeFilterDto filter, int page )
+		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByFiltersAsync ( RecipeFilterDto filter, int page, Guid? userId = null )
 		{
 			var result = await _recipeRepository.GetRecipesByFiltersAsync(
 				filter.CategoryIds,
@@ -37,29 +39,29 @@ namespace GrandmasRecipes.Application.Implementations
 				filter.DifficultyIds,
 				filter.ProductIds,
 				page >= 0 ? page : 0);
-			return MapToPreviewPaged(result, null);
+			return await MapToPreviewPaged(result, userId);
 		}
 
-		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByAuthorAsync(Guid authorId, int page)
-        {
-            var result = await _recipeRepository.GetRecipesByAuthorAsync(authorId, page >= 0 ? page : 0);
-            return MapToPreviewPaged(result, null);
-        }
+		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByAuthorAsync ( Guid authorId, int page, Guid? userId = null )
+		{
+			var result = await _recipeRepository.GetRecipesByAuthorAsync(authorId, page >= 0 ? page : 0);
+			return await MapToPreviewPaged(result, userId);
+		}
 
-        public async Task<PagedResult<RecipePreviewDto>> GetRecipesByLikedAsync(Guid userId, int page)
+		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByLikedAsync(Guid userId, int page)
         {
             var result = await _recipeRepository.GetRecipesByLikesAsync(page >= 0 ? page : 0);
-            return MapToPreviewPaged(result, userId);
+            return await MapToPreviewPaged(result, userId);
         }
 
-        public async Task<RecipeDetailsDto?> GetRecipeByIdAsync(Guid recipeId)
-        {
-            var r = await _recipeRepository.GetRecipeByIdWithAllAsync(recipeId);
-            if (r == null) return null;
-            return MapToDetails(r, null);
-        }
+		public async Task<RecipeDetailsDto?> GetRecipeByIdAsync ( Guid recipeId, Guid? userId = null )
+		{
+			var r = await _recipeRepository.GetRecipeByIdWithAllAsync(recipeId);
+			if(r == null) return null;
+			return await MapToDetails(r, userId);
+		}
 
-        public async Task<Result> CreateRecipeAsync(RecipeCreateDto dto)
+		public async Task<Result> CreateRecipeAsync(RecipeCreateDto dto)
         {
             var recipe = new Recipe
             {
@@ -107,31 +109,43 @@ namespace GrandmasRecipes.Application.Implementations
             return Result.Ok();
         }
 
-        private static PagedResult<RecipePreviewDto> MapToPreviewPaged(PagedResult<Recipe> source, Guid? userId)
-        {
-            return new PagedResult<RecipePreviewDto>
-            {
-                Items = source.Items.Select(r => MapToPreview(r, userId)).ToList(),
-                TotalCount = source.TotalCount,
-                PageNumber = source.PageNumber,
-                PageSize = source.PageSize
-            };
-        }
+		private async Task<PagedResult<RecipePreviewDto>> MapToPreviewPaged ( PagedResult<Recipe> source, Guid? userId )
+		{
+			HashSet<Guid> likedRecipeIds = [];
 
-        private static RecipePreviewDto MapToPreview(Recipe r, Guid? userId)
-        {
-            return new RecipePreviewDto
-            {
-                Id = r.Id,
-                Title = r.Title,
-                ImageUrl = r.ImageUrls?.FirstOrDefault(),
-                Likes = r.Likes,
-                IsLiked = userId.HasValue && r.Liked.Any(l => l.AccountId == userId.Value),
-                AuthorNickname = r.Author?.Nickname
-            };
-        }
+			if(userId != null)
+			{
+				var ids = await _likeRepository.GetLikedRecipeIdsAsync(userId.Value);
+				likedRecipeIds = ids.ToHashSet();
+			}
 
-        private static RecipeDetailsDto MapToDetails(Recipe r, Guid? userId)
+			var items = source.Items
+				.Select(r => MapToPreview(r, likedRecipeIds))
+				.ToList();
+
+			return new PagedResult<RecipePreviewDto>
+			{
+				Items = items,
+				TotalCount = source.TotalCount,
+				PageNumber = source.PageNumber,
+				PageSize = source.PageSize
+			};
+		}
+
+		private RecipePreviewDto MapToPreview ( Recipe r, HashSet<Guid> likedRecipeIds )
+		{
+			return new RecipePreviewDto
+			{
+				Id = r.Id,
+				Title = r.Title,
+				ImageUrl = r.ImageUrls?.FirstOrDefault(),
+				Likes = r.Likes,
+				IsLiked = likedRecipeIds.Contains(r.Id),
+				AuthorNickname = r.Author?.Nickname
+			};
+		}
+
+		private async Task<RecipeDetailsDto> MapToDetails(Recipe r, Guid? userId)
         {
             return new RecipeDetailsDto
             {
@@ -141,7 +155,7 @@ namespace GrandmasRecipes.Application.Implementations
                 ImageUrls = r.ImageUrls,
                 Calories = r.Calories,
                 Likes = r.Likes,
-                IsLiked = userId.HasValue && r.Liked.Any(l => l.AccountId == userId.Value),
+                IsLiked = userId != null ? await _likeRepository.ExistsLikeAsync(((Guid)userId), r.Id) : false,
 
                 Author = r.Author == null ? null : new AccountSummaryDto
                 {

@@ -16,7 +16,8 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 		public IRecipeRepository Recipes { get; }
         public IAccountRepository Accounts { get; }
         public IReviewRepository Reviews { get; }
-        public IIngredientRepository Ingredients { get; }
+        public ILikeRepository Likes { get; }
+		public IIngredientRepository Ingredients { get; }
 		public IRefreshTokenRepository RefreshTokens { get; }
 
 		public UnitOfWork
@@ -30,7 +31,8 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			IRecipeRepository recipes,
             IAccountRepository accounts,
             IReviewRepository reviews,
-            IIngredientRepository ingredients,
+            ILikeRepository likes,
+			IIngredientRepository ingredients,
 			IRefreshTokenRepository refreshTokens
 
 		)
@@ -44,7 +46,8 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			Recipes = recipes;
             Accounts = accounts;
             Reviews = reviews;
-            Ingredients = ingredients;
+            Likes = likes;
+			Ingredients = ingredients;
 			RefreshTokens = refreshTokens;
 		}
 
