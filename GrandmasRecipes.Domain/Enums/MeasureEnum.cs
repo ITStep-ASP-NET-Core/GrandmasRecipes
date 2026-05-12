@@ -2,27 +2,37 @@
 
 namespace GrandmasRecipes.Domain.Enums
 {
-	public enum MeasureEnum
-	{
-		[Description("ml")]
-		Milliliters,
+    /// <summary>
+    /// Одиниці виміру для інгредієнтів рецептів.
+    /// </summary>
+    public enum MeasureEnum
+    {
+        /// <summary>Мілілітри.</summary>
+        [Description("ml")]
+        Milliliters,
 
-		[Description("g")]
-		Grams,
+        /// <summary>Грами.</summary>
+        [Description("g")]
+        Grams,
 
-		[Description("l")]
-		Liters,
+        /// <summary>Літри.</summary>
+        [Description("l")]
+        Liters,
 
-		[Description("kg")]
-		Kilograms,
+        /// <summary>Кілограми.</summary>
+        [Description("kg")]
+        Kilograms,
 
-		[Description("spoons")]
-		Spoons,
+        /// <summary>Столові ложки.</summary>
+        [Description("spoons")]
+        Spoons,
 
-		[Description("glasses")]
-		Glasses,
+        /// <summary>Склянки.</summary>
+        [Description("glasses")]
+        Glasses,
 
-		[Description("pieces")]
-		Pieces,
-	}
+        /// <summary>Штуки.</summary>
+        [Description("pieces")]
+        Pieces,
+    }
 }

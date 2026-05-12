@@ -2,18 +2,24 @@
 
 namespace GrandmasRecipes.Domain.Entities
 {
-	public class Cuisine
-	{
-		[Key]
-		public int Id { get; set; }
+    /// <summary>
+    /// Кухня народів світу. Наприклад: українська, італійська, японська.
+    /// </summary>
+    public class Cuisine
+    {
+        [Key]
+        public int Id { get; set; }
 
-		public string Name { get; set; } = string.Empty;
+        /// <summary>Назва кухні.</summary>
+        public string Name { get; set; } = string.Empty;
 
-		public string? Description { get; set; }
+        /// <summary>Опис кухні.</summary>
+        public string? Description { get; set; }
 
-		public string? ImageUrl { get; set; }
+        /// <summary>Посилання на зображення кухні.</summary>
+        public string? ImageUrl { get; set; }
 
-		public ICollection<Recipe> Recipes { get; set; } = [];
-
-	}
+        /// <summary>Рецепти що належать до цієї кухні.</summary>
+        public ICollection<Recipe> Recipes { get; set; } = [];
+    }
 }

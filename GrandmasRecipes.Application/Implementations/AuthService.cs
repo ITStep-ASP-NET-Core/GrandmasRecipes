@@ -11,8 +11,13 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace GrandmasRecipes.Application.Implementations
 {
-	public class AuthService : IAuthService
-	{
+    /// <summary>
+    /// Сервіс авторизації та автентифікації.
+    /// Використовує JWT (15 хв) + Refresh токен (7 днів).
+    /// Паролі хешуються через Argon2id.
+    /// </summary>
+    public class AuthService : IAuthService
+    {
 		private readonly IUnitOfWork _uow;
 		private readonly IPasswordHasher _passwordHasher;
 		private readonly IConfiguration _configuration;

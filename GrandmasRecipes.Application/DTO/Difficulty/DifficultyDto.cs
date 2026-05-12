@@ -2,5 +2,6 @@ using GrandmasRecipes.Application.DTO.Common;
 
 namespace GrandmasRecipes.Application.DTO.Difficulty
 {
-	public class DifficultyDto : LookupDto { }
+    /// <summary>Повна інформація про рівень складності рецепту.</summary>
+    public class DifficultyDto : LookupDto { }
 }

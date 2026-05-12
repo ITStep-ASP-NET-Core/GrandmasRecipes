@@ -1,10 +1,18 @@
-﻿
-namespace GrandmasRecipes.Application.DTO.Account
+﻿namespace GrandmasRecipes.Application.DTO.Account
 {
-	public class AccountSummaryDto
-	{
-		public Guid Id { get; set; }
-		public string Nickname { get; set; } = string.Empty;
-		public string? ImageUrl { get; set; }
-	}
+    /// <summary>
+    /// Скорочена інформація про акаунт.
+    /// Використовується у RecipeDetailsDto як автор рецепту.
+    /// </summary>
+    public class AccountSummaryDto
+    {
+        /// <summary>Ідентифікатор акаунту.</summary>
+        public Guid Id { get; set; }
+
+        /// <summary>Нікнейм користувача.</summary>
+        public string Nickname { get; set; } = string.Empty;
+
+        /// <summary>Посилання на фото профілю.</summary>
+        public string? ImageUrl { get; set; }
+    }
 }

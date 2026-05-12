@@ -2,5 +2,6 @@ using GrandmasRecipes.Application.DTO.Common;
 
 namespace GrandmasRecipes.Application.DTO.Measure
 {
-	public class MeasureDto : LookupDto { }
+    /// <summary>Повна інформація про одиницю виміру.</summary>
+    public class MeasureDto : LookupDto { }
 }

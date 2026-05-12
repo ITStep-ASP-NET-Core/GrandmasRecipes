@@ -2,12 +2,27 @@
 
 namespace GrandmasRecipes.Infrastructure.Interfaces
 {
+    /// <summary>
+    /// Репозиторій для роботи з інгредієнтами рецептів.
+    /// </summary>
     public interface IIngredientRepository
     {
-        Task<ICollection<Ingredient>> GetIngredientsByRecipeIdAsync ( Guid recipeId );
+        /// <summary>
+        /// Отримати всі інгредієнти конкретного рецепту.
+        /// </summary>
+        /// <param name="recipeId">Ідентифікатор рецепту.</param>
+        Task<ICollection<Ingredient>> GetIngredientsByRecipeIdAsync(Guid recipeId);
 
-        Task AddIngredientAsync ( Ingredient ingredient );
-		void UpdateIngredient ( Ingredient ingredient );
-		void DeleteIngredient ( Ingredient ingredient );
-	}
+        /// <summary>Додати інгредієнт до рецепту.</summary>
+        /// <param name="ingredient">Інгредієнт для додавання.</param>
+        Task AddIngredientAsync(Ingredient ingredient);
+
+        /// <summary>Оновити інгредієнт.</summary>
+        /// <param name="ingredient">Інгредієнт з оновленими даними.</param>
+        void UpdateIngredient(Ingredient ingredient);
+
+        /// <summary>Видалити інгредієнт.</summary>
+        /// <param name="ingredient">Інгредієнт для видалення.</param>
+        void DeleteIngredient(Ingredient ingredient);
+    }
 }

@@ -12,6 +12,9 @@ using GrandmasRecipes.Infrastructure.Interfaces;
 
 namespace GrandmasRecipes.Application.Implementations
 {
+    /// <summary>
+    /// Сервіс для роботи з рецептами.
+    /// </summary>
     public class RecipeService : IRecipeService
     {
         private readonly IRecipeRepository _recipeRepository;
@@ -109,8 +112,13 @@ namespace GrandmasRecipes.Application.Implementations
             return Result.Ok();
         }
 
-		private async Task<PagedResult<RecipePreviewDto>> MapToPreviewPaged ( PagedResult<Recipe> source, Guid? userId )
-		{
+        /// <summary>
+        /// Маппінг списку рецептів у Preview DTO.
+        /// Оптимізований: завантажує всі лайкнуті рецепти користувача одним запитом
+        /// замість перевірки кожного рецепту окремо.
+        /// </summary>
+        private async Task<PagedResult<RecipePreviewDto>> MapToPreviewPaged(PagedResult<Recipe> source, Guid? userId)
+        {
 			HashSet<Guid> likedRecipeIds = [];
 
 			if(userId != null)

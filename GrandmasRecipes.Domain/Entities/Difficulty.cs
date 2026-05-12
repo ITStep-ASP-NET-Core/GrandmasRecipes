@@ -1,18 +1,22 @@
-﻿using GrandmasRecipes.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GrandmasRecipes.Domain.Entities
 {
-	public class Difficulty
-	{
-		[Key]
-		public int Id { get; set; }
+    /// <summary>
+    /// Складність приготування рецепту.
+    /// </summary>
+    public class Difficulty
+    {
+        [Key]
+        public int Id { get; set; }
 
-		public string Name { get; set; } = string.Empty;
+        /// <summary>Назва рівня складності.</summary>
+        public string Name { get; set; } = string.Empty;
 
-		public string? ImageUrl { get; set; }
+        /// <summary>Посилання на іконку складності.</summary>
+        public string? ImageUrl { get; set; }
 
-		public ICollection<Recipe> Recipes { get; set; } = [];
-
-	}
+        /// <summary>Рецепти з цим рівнем складності.</summary>
+        public ICollection<Recipe> Recipes { get; set; } = [];
+    }
 }

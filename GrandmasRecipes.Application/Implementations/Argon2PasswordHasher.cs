@@ -5,8 +5,14 @@ using System.Text;
 
 namespace GrandmasRecipes.Application.Implementations
 {
-	public class Argon2PasswordHasher : IPasswordHasher
-	{
+    /// <summary>
+    /// Хешування паролів через алгоритм Argon2id.
+    /// Параметри: 8 потоків, 4 ітерації, 128MB пам'яті.
+    /// Сіль генерується випадково для кожного пароля.
+    /// Захищений від timing attacks через FixedTimeEquals.
+    /// </summary>
+    public class Argon2PasswordHasher : IPasswordHasher
+    {
 		private const int SaltSize = 16;
 		private const int HashSize = 32;
 		private const int DegreeOfParallelism = 8;

@@ -2,11 +2,15 @@
 
 namespace GrandmasRecipes.Domain.Entities
 {
-	public class Measure
-	{
-		[Key]
-		public int Id { get; set; }
+    /// <summary>
+    /// Одиниця виміру для інгредієнтів. Наприклад: кг, л, штук.
+    /// </summary>
+    public class Measure
+    {
+        [Key]
+        public int Id { get; set; }
 
-		public string Name { get; set; } = null!;
-	}
+        /// <summary>Назва одиниці виміру.</summary>
+        public string Name { get; set; } = null!;
+    }
 }

@@ -5,8 +5,11 @@ using GrandmasRecipes.Infrastructure.Interfaces;
 
 namespace GrandmasRecipes.Application.Implementations
 {
-	public class LikeService : ILikeService
-	{
+    /// <summary>
+    /// Сервіс управління лайками на рецепти.
+    /// </summary>
+    public class LikeService : ILikeService
+    {
 		private readonly IUnitOfWork _uow;
 
 		public LikeService ( IUnitOfWork uow )
@@ -19,8 +22,13 @@ namespace GrandmasRecipes.Application.Implementations
 			return await _uow.Likes.ExistsLikeAsync(accountId, recipeId);
 		}
 
-		public async Task<Result> AddLikeAsync ( Guid accountId, Guid recipeId )
-		{
+        /// <summary>
+        /// Поставити лайк на рецепт.
+        /// При додаванні лайку автоматично збільшує лічильник Likes у рецепті.
+        /// Повертає помилку якщо лайк вже існує або рецепт не знайдений.
+        /// </summary>
+        public async Task<Result> AddLikeAsync(Guid accountId, Guid recipeId)
+        {
 			if(await _uow.Likes.ExistsLikeAsync(accountId, recipeId))
 				return Result.Fail("Рецепт уже лайкнут");
 
@@ -36,8 +44,13 @@ namespace GrandmasRecipes.Application.Implementations
 			return Result.Ok();
 		}
 
-		public async Task<Result> RemoveLikeAsync ( Guid accountId, Guid recipeId )
-		{
+        /// <summary>
+        /// Прибрати лайк з рецепту.
+        /// При видаленні лайку автоматично зменшує лічильник Likes у рецепті (мінімум 0).
+        /// Повертає помилку якщо лайк або рецепт не знайдені.
+        /// </summary>
+        public async Task<Result> RemoveLikeAsync(Guid accountId, Guid recipeId)
+        {
 			var like = await _uow.Likes.GetLikeAsync(accountId, recipeId);
 			if(like is null)
 				return Result.Fail("Лайк не найден");

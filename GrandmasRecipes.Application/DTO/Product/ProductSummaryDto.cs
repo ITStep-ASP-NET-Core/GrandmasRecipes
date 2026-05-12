@@ -2,5 +2,6 @@ using GrandmasRecipes.Application.DTO.Common;
 
 namespace GrandmasRecipes.Application.DTO.Product
 {
-	public class ProductSummaryDto : LookupSummaryDto { }
+    /// <summary>Скорочена інформація про продукт.</summary>
+    public class ProductSummaryDto : LookupSummaryDto { }
 }

@@ -2,5 +2,6 @@ using GrandmasRecipes.Application.DTO.Common;
 
 namespace GrandmasRecipes.Application.DTO.Category
 {
-	public class CategoryDto : LookupDto { }
+    /// <summary>Повна інформація про категорію рецептів.</summary>
+    public class CategoryDto : LookupDto { }
 }

@@ -7,22 +7,53 @@ using GrandmasRecipes.Application.DTO.Step;
 
 namespace GrandmasRecipes.Application.DTO.Recipe
 {
+    /// <summary>
+    /// Детальна інформація про рецепт.
+    /// Використовується для відображення повної сторінки рецепту.
+    /// </summary>
     public class RecipeDetailsDto
     {
-		public Guid Id { get; set; }
-		public string Title { get; set; } = string.Empty;
-		public string? Description { get; set; }
-		public string[]? ImageUrls { get; set; }
-		public int Calories { get; set; }
-		public int Likes { get; set; }
-		public bool IsLiked { get; set; }
+        /// <summary>Ідентифікатор рецепту.</summary>
+        public Guid Id { get; set; }
 
-		public AccountSummaryDto? Author { get; set; }
-		public DifficultySummaryDto? Difficulty { get; set; }
-		public CuisineSummaryDto? Cuisine { get; set; }
+        /// <summary>Назва рецепту.</summary>
+        /// <example>Борщ український</example>
+        public string Title { get; set; } = string.Empty;
 
-		public ICollection<CategorySummaryDto>? Categories { get; set; }
-		public ICollection<IngredientDto>? Ingredients { get; set; }
-		public ICollection<StepDto>? Steps { get; set; }
-	}
+        /// <summary>Опис рецепту.</summary>
+        public string? Description { get; set; }
+
+        /// <summary>Масив посилань на фотографії рецепту.</summary>
+        public string[]? ImageUrls { get; set; }
+
+        /// <summary>Кількість калорій на порцію.</summary>
+        /// <example>350</example>
+        public int Calories { get; set; }
+
+        /// <summary>Кількість лайків.</summary>
+        /// <example>142</example>
+        public int Likes { get; set; }
+
+        /// <summary>Чи лайкнув поточний користувач цей рецепт.</summary>
+        /// <example>false</example>
+        public bool IsLiked { get; set; }
+
+        /// <summary>Автор рецепту.</summary>
+        public AccountSummaryDto? Author { get; set; }
+
+        /// <summary>Складність приготування.</summary>
+        public DifficultySummaryDto? Difficulty { get; set; }
+
+        /// <summary>Кухня до якої належить рецепт.</summary>
+        public CuisineSummaryDto? Cuisine { get; set; }
+
+        /// <summary>Категорії рецепту.</summary>
+        public ICollection<CategorySummaryDto>? Categories { get; set; }
+
+        /// <summary>Список інгредієнтів.</summary>
+        public ICollection<IngredientDto>? Ingredients { get; set; }
+
+        /// <summary>Кроки приготування у порядку виконання.</summary>
+        public ICollection<StepDto>? Steps { get; set; }
+    }
 }
