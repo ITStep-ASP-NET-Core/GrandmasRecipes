@@ -5,26 +5,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GrandmasRecipes.Infrastructure.Repositories
 {
-    public class AccountRepository : IAccountRepository
-    {
-        private readonly ApplicationContext _context;
+	public class AccountRepository : IAccountRepository
+	{
+		private readonly ApplicationContext _context;
 
-        public AccountRepository(ApplicationContext context)
-        {
-            _context = context;
-        }
+		public AccountRepository ( ApplicationContext context )
+		{
+			_context = context;
+		}
 
-        public async Task<IEnumerable<Account>> GetAllAsync() => await _context.Accounts.ToListAsync();
+		public async Task<Account?> GetAccountByIdAsync ( Guid id )
+		{
+			return await _context.Accounts.FindAsync(id);
+		}
 
-        public async Task<Account?> GetByIdAsync(Guid id) => await _context.Accounts.FindAsync(id);
+		public async Task<Account?> GetAccountByEmailAsync ( string email )
+		{
+			return await _context.Accounts.FirstOrDefaultAsync(a => a.Email == email);
+		}
 
-        public async Task AddAsync(Account account) => await _context.Accounts.AddAsync(account);
+		public async Task AddAccountAsync ( Account account )
+		{
+			await _context.Accounts.AddAsync(account);
+		}
 
-        public void Update(Account account) => _context.Accounts.Update(account);
+		public void UpdateAccount ( Account account )
+		{
+			_context.Accounts.Update(account);
+		}
 
-        public void Delete(Account account) => _context.Accounts.Remove(account);
-
-        // Реализация сохранения изменений через контекст
-        public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
-    }
+		public void DeleteAccount ( Account account )
+		{
+			_context.Accounts.Remove(account);
+		}
+	}
 }

@@ -1,18 +1,21 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace GrandmasRecipes.Domain.Entities
+﻿namespace GrandmasRecipes.Domain.Entities
 {
-    public class User : IdentityUser<Guid>     // ← ЗМІНИЛИ З Account НА ЦЕ
+    /// <summary>
+    /// Звичайний користувач системи.
+    /// Розширює <see cref="Account"/> додатковими полями профілю.
+    /// </summary>
+    public class User : Account
     {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
+        /// <summary>Посилання на фото профілю.</summary>
+        public string? ImageUrl { get; set; }
 
+        /// <summary>Загальна кількість лайків на всіх рецептах користувача.</summary>
+        public int Likes { get; set; } = 0;
+
+        /// <summary>Кількість опублікованих рецептів.</summary>
+        public int Published { get; set; } = 0;
+
+        /// <summary>Дата реєстрації акаунту.</summary>
         public DateTime RegisteredAt { get; set; } = DateTime.UtcNow;
-
-        public int TotalLikes { get; set; } = 0;
-
-        public ICollection<Recipe> Recipes { get; set; } = new List<Recipe>();
-
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

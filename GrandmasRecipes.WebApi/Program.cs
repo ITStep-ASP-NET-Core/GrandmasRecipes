@@ -1,60 +1,72 @@
+using GrandmasRecipes.Application.ServiceProviderExtensions;
 using GrandmasRecipes.Infrastructure.Data;
-using GrandmasRecipes.Infrastructure.Interfaces;
-using GrandmasRecipes.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Scalar.AspNetCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Подключаем базу через строку соединения из конфига
-builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddApplicationContext(builder.Configuration.GetConnectionString("DefaultConnection"));
 
-// Регистрация репозиториев для DI-контейнера
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddUnitOfWork();
+builder.Services.AddApplicationServices();
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        // Фикс для бесконечной рекурсии в JSON (связь рецепт-автор)
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    });
+	.AddJsonOptions(options =>
+	{
+		options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+	});
 
-// Конфиг для генерации документации Swagger
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = builder.Configuration["Jwt:Issuer"],
+		ValidAudience = builder.Configuration["Jwt:Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]!))
+	};
+});
 
-// Регистрация репозиториев для DI-контейнера
-builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-
-builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
-
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
+	options.AddDefaultPolicy(policy =>
+	{
+		policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+	});
 });
 
 var app = builder.Build();
 
-
-if (app.Environment.IsDevelopment())
+if(app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	using(var scope = app.Services.CreateScope())
+	{
+		var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+		context.Database.EnsureDeleted();
+		context.Database.EnsureCreated();
+		await DbInitializer.InitializeAsync(context);
+	}
+
+	app.MapOpenApi();
+	app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();
-app.UseCors();
-app.UseAuthorization();
-
-// Разрешаем серверу раздавать статические файлы (картинки) из wwwroot
 app.UseStaticFiles();
-
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();

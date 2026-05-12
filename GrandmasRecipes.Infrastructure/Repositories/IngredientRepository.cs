@@ -6,24 +6,32 @@ using Microsoft.EntityFrameworkCore;
 namespace GrandmasRecipes.Infrastructure.Repositories
 {
     public class IngredientRepository : IIngredientRepository
-    {
+	{
         private readonly ApplicationContext _context;
 
-        // Внедряем контекст БД
         public IngredientRepository(ApplicationContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<Ingredient>> GetByRecipeIdAsync(Guid recipeId)
-        {
-            return await _context.Ingredients
-                .Where(i => i.RecipeId == recipeId)
-                .ToListAsync();
-        }
+		public async Task<ICollection<Ingredient>> GetIngredientsByRecipeIdAsync ( Guid recipeId )
+		{
+			return await _context.Ingredients.Where(i => i.RecipeId == recipeId).Include(i => i.Product).AsNoTracking().ToListAsync();
+		}
 
-        public async Task AddAsync(Ingredient ingredient) => await _context.Ingredients.AddAsync(ingredient);
+		public async Task AddIngredientAsync ( Ingredient ingredient )
+		{
+			await _context.Ingredients.AddAsync(ingredient);
+		}
 
-        public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
-    }
+		public void UpdateIngredient ( Ingredient ingredient )
+		{
+			_context.Ingredients.Update(ingredient);
+		}
+
+		public void DeleteIngredient ( Ingredient ingredient )
+		{
+			_context.Ingredients.Remove(ingredient);
+		}
+	}
 }

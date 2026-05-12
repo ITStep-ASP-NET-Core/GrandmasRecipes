@@ -1,16 +1,16 @@
-﻿using GrandmasRecipes.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace GrandmasRecipes.Domain.Entities
 {
-	public class Product
-	{
-		[Key]
-		public int Id { get; set; }
+    /// <summary>
+    /// Продукт що використовується в інгредієнтах рецептів.
+    /// </summary>
+    public class Product
+    {
+        [Key]
+        public int Id { get; set; }
 
-		public string Name { get; set; } = null!;
-
-		public Measure Measure { get; set; }
-
-	}
+        /// <summary>Назва продукту.</summary>
+        public string Name { get; set; } = string.Empty;
+    }
 }
