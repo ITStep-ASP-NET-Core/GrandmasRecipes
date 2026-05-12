@@ -17,14 +17,14 @@ namespace GrandmasRecipes.Application.Implementations
         public async Task<ICollection<CategoryDto>> GetAllAsync()
         {
             var items = await _uow.Categories.GetAllAsync();
-            return items.Select(c => new CategoryDto { Id = c.Id, Name = c.Name }).ToList();
+            return items.Select(c => new CategoryDto { Id = c.Id, Name = c.Name, ImageUrl = c.ImageUrl }).ToList();
         }
 
         public async Task<CategoryDto?> GetAsync(int id)
         {
             var c = await _uow.Categories.GetByIdAsync(id);
             if (c == null) return null;
-            return new CategoryDto { Id = c.Id, Name = c.Name };
+            return new CategoryDto { Id = c.Id, Name = c.Name, ImageUrl = c.ImageUrl };
         }
 
         public async Task AddAsync(CategoryDto dto)

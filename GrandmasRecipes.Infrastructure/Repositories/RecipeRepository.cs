@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GrandmasRecipes.Infrastructure.Repositories
 {
-    public class RecipeRepository : IRecipeRepository
-    {
-        private readonly ApplicationContext _context;
+	public class RecipeRepository : IRecipeRepository
+	{
+		private readonly ApplicationContext _context;
 
-        public RecipeRepository(ApplicationContext context)
-        {
-            _context = context;
-        }
+		public RecipeRepository ( ApplicationContext context )
+		{
+			_context = context;
+		}
 
 		public async Task<PagedResult<Recipe>> GetRecipesByLikesAsync ( int page, int pageSize = 10 )
 		{
@@ -78,6 +78,7 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 		}
 
 		public async Task<PagedResult<Recipe>> GetRecipesByFiltersAsync (
+			string? searchQuery,
 			ICollection<int>? categoryIds,
 			ICollection<int>? cuisineIds,
 			ICollection<int>? difficultyIds,
@@ -86,6 +87,9 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			int pageSize = 10 )
 		{
 			var query = _context.Recipes.AsQueryable();
+
+			if(!string.IsNullOrWhiteSpace(searchQuery))
+				query = query.Where(r => r.Title.ToLower().Contains(searchQuery.ToLower()));
 
 			if(categoryIds != null && categoryIds.Count > 0)
 				query = query.Where(r => r.Categories.Any(c => categoryIds.Contains(c.Id)));
@@ -114,6 +118,11 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 				PageSize = pageSize,
 				TotalCount = await query.CountAsync()
 			};
+		}
+
+		public async Task<Recipe?> GetRecipeByIdAsync ( Guid id )
+		{
+			return await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
 		}
 
 		public async Task<Recipe?> GetRecipeByIdWithAllAsync ( Guid id )

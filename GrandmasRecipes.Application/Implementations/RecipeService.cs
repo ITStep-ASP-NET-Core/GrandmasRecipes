@@ -12,21 +12,21 @@ using GrandmasRecipes.Infrastructure.Interfaces;
 
 namespace GrandmasRecipes.Application.Implementations
 {
-    /// <summary>
-    /// Сервіс для роботи з рецептами.
-    /// </summary>
-    public class RecipeService : IRecipeService
-    {
-        private readonly IRecipeRepository _recipeRepository;
-        private readonly ILikeRepository _likeRepository;
+	/// <summary>
+	/// Сервіс для роботи з рецептами.
+	/// </summary>
+	public class RecipeService : IRecipeService
+	{
+		private readonly IRecipeRepository _recipeRepository;
+		private readonly ILikeRepository _likeRepository;
 		private readonly IUnitOfWork _uow;
 
-        public RecipeService(IRecipeRepository recipeRepository, ILikeRepository likeRepository, IUnitOfWork uow)
-        {
-            _recipeRepository = recipeRepository;
+		public RecipeService ( IRecipeRepository recipeRepository, ILikeRepository likeRepository, IUnitOfWork uow )
+		{
+			_recipeRepository = recipeRepository;
 			_likeRepository = likeRepository;
 			_uow = uow;
-        }
+		}
 
 		public async Task<PagedResult<RecipePreviewDto>> GetRecipesAsync ( int page, Guid? userId = null )
 		{
@@ -37,6 +37,7 @@ namespace GrandmasRecipes.Application.Implementations
 		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByFiltersAsync ( RecipeFilterDto filter, int page, Guid? userId = null )
 		{
 			var result = await _recipeRepository.GetRecipesByFiltersAsync(
+				filter.SearchQuery,
 				filter.CategoryIds,
 				filter.CuisineIds,
 				filter.DifficultyIds,
@@ -51,11 +52,11 @@ namespace GrandmasRecipes.Application.Implementations
 			return await MapToPreviewPaged(result, userId);
 		}
 
-		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByLikedAsync(Guid userId, int page)
-        {
-            var result = await _recipeRepository.GetLikedRecipesByUserAsync(userId, page >= 0 ? page : 0);
-            return await MapToPreviewPaged(result, userId);
-        }
+		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByLikedAsync ( Guid userId, int page )
+		{
+			var result = await _recipeRepository.GetLikedRecipesByUserAsync(userId, page >= 0 ? page : 0);
+			return await MapToPreviewPaged(result, userId);
+		}
 
 		public async Task<RecipeDetailsDto?> GetRecipeByIdAsync ( Guid recipeId, Guid? userId = null )
 		{
@@ -80,15 +81,19 @@ namespace GrandmasRecipes.Application.Implementations
 				AuthorId = dto.AuthorId,
 				DifficultyId = dto.DifficultyId,
 				CuisineId = dto.CuisineId,
+				Categories = new List<Category>(),
+				Ingredients = new List<Ingredient>(),
+				Steps = new List<Step>()
 			};
 
 			if(dto.CategoryIds is { } categoryIds && categoryIds.Any())
 			{
-				var idsSet = categoryIds.ToHashSet();
-				var allCategories = await _uow.Categories.GetAllAsync();
-				var categories = allCategories.Where(c => idsSet.Contains(c.Id));
-				foreach(var c in categories)
-					recipe.Categories.Add(c);
+				foreach(var id in categoryIds)
+				{
+					var category = await _uow.Categories.GetByIdAsync(id);
+					if(category != null)
+						recipe.Categories.Add(category);
+				}
 			}
 
 			if(dto.Ingredients is { } ingredients)
@@ -115,7 +120,8 @@ namespace GrandmasRecipes.Application.Implementations
 						Number = s.Number,
 						Title = s.Title,
 						Description = s.Description,
-						ImageUrl = s.ImageUrl
+						ImageUrl = s.ImageUrl,
+						SubSteps = new List<SubStep>()
 					};
 
 					if(s.SubSteps is { } subSteps)
@@ -140,40 +146,40 @@ namespace GrandmasRecipes.Application.Implementations
 			return (recipeId, Result.Ok());
 		}
 
-		public async Task<Result> EditRecipeAsync(RecipeEditDto dto)
-        {
-            var recipe = await _recipeRepository.GetRecipeByIdWithAllAsync(dto.RecipeId);
-            if (recipe == null) return Result.Fail("Рецепт не найден");
+		public async Task<Result> EditRecipeAsync ( RecipeEditDto dto )
+		{
+			var recipe = await _recipeRepository.GetRecipeByIdWithAllAsync(dto.RecipeId);
+			if(recipe == null) return Result.Fail("Рецепт не найден");
 
-            if (dto.Title != null) recipe.Title = dto.Title;
-            if (dto.Description != null) recipe.Description = dto.Description;
-            if (dto.ImageUrls != null) recipe.ImageUrls = dto.ImageUrls;
-            if (dto.Calories != null) recipe.Calories = dto.Calories.Value;
-            if (dto.DifficultyId != null) recipe.DifficultyId= dto.DifficultyId.Value;
-            if (dto.CuisineId != null) recipe.CuisineId = dto.CuisineId.Value;
+			if(dto.Title != null) recipe.Title = dto.Title;
+			if(dto.Description != null) recipe.Description = dto.Description;
+			if(dto.ImageUrls != null) recipe.ImageUrls = dto.ImageUrls;
+			if(dto.Calories != null) recipe.Calories = dto.Calories.Value;
+			if(dto.DifficultyId != null) recipe.DifficultyId = dto.DifficultyId.Value;
+			if(dto.CuisineId != null) recipe.CuisineId = dto.CuisineId.Value;
 
-            _recipeRepository.UpdateRecipe(recipe);
-            await _uow.SaveChangesAsync();
-            return Result.Ok();
-        }
+			_recipeRepository.UpdateRecipe(recipe);
+			await _uow.SaveChangesAsync();
+			return Result.Ok();
+		}
 
-        public async Task<Result> DeleteRecipeAsync(Guid recipeId)
-        {
-            var recipe = await _recipeRepository.GetRecipeByIdWithAllAsync(recipeId);
-            if (recipe == null) return Result.Fail("Рецепт не найден");
+		public async Task<Result> DeleteRecipeAsync ( Guid recipeId )
+		{
+			var recipe = await _recipeRepository.GetRecipeByIdWithAllAsync(recipeId);
+			if(recipe == null) return Result.Fail("Рецепт не найден");
 
-            _recipeRepository.DeleteRecipe(recipe);
-            await _uow.SaveChangesAsync();
-            return Result.Ok();
-        }
+			_recipeRepository.DeleteRecipe(recipe);
+			await _uow.SaveChangesAsync();
+			return Result.Ok();
+		}
 
-        /// <summary>
-        /// Маппінг списку рецептів у Preview DTO.
-        /// Оптимізований: завантажує всі лайкнуті рецепти користувача одним запитом
-        /// замість перевірки кожного рецепту окремо.
-        /// </summary>
-        private async Task<PagedResult<RecipePreviewDto>> MapToPreviewPaged(PagedResult<Recipe> source, Guid? userId)
-        {
+		/// <summary>
+		/// Маппінг списку рецептів у Preview DTO.
+		/// Оптимізований: завантажує всі лайкнуті рецепти користувача одним запитом
+		/// замість перевірки кожного рецепту окремо.
+		/// </summary>
+		private async Task<PagedResult<RecipePreviewDto>> MapToPreviewPaged ( PagedResult<Recipe> source, Guid? userId )
+		{
 			HashSet<Guid> likedRecipeIds = [];
 
 			if(userId != null)
@@ -208,62 +214,62 @@ namespace GrandmasRecipes.Application.Implementations
 			};
 		}
 
-		private async Task<RecipeDetailsDto> MapToDetails(Recipe r, Guid? userId)
-        {
-            return new RecipeDetailsDto
-            {
-                Id = r.Id,
-                Title = r.Title,
-                Description = r.Description,
-                ImageUrls = r.ImageUrls,
-                Calories = r.Calories,
-                Likes = r.Likes,
-                IsLiked = userId != null ? await _likeRepository.ExistsLikeAsync(((Guid)userId), r.Id) : false,
+		private async Task<RecipeDetailsDto> MapToDetails ( Recipe r, Guid? userId )
+		{
+			return new RecipeDetailsDto
+			{
+				Id = r.Id,
+				Title = r.Title,
+				Description = r.Description,
+				ImageUrls = r.ImageUrls,
+				Calories = r.Calories,
+				Likes = r.Likes,
+				IsLiked = userId != null ? await _likeRepository.ExistsLikeAsync(((Guid)userId), r.Id) : false,
 
-                Author = r.Author == null ? null : new AccountSummaryDto
-                {
-                    Id = r.Author.Id,
-                    Nickname = r.Author.Nickname,
-                    ImageUrl = null
-                },
+				Author = r.Author == null ? null : new AccountSummaryDto
+				{
+					Id = r.Author.Id,
+					Nickname = r.Author.Nickname,
+					ImageUrl = null
+				},
 
-                Difficulty = r.Difficulty == null ? null : new DifficultySummaryDto
-                {
-                    Id = r.Difficulty.Id,
-                    Name = r.Difficulty.Name
-                },
+				Difficulty = r.Difficulty == null ? null : new DifficultySummaryDto
+				{
+					Id = r.Difficulty.Id,
+					Name = r.Difficulty.Name
+				},
 
-                Cuisine = r.Cuisine == null ? null : new CuisineSummaryDto
-                {
-                    Id = r.Cuisine.Id,
-                    Name = r.Cuisine.Name
-                },
+				Cuisine = r.Cuisine == null ? null : new CuisineSummaryDto
+				{
+					Id = r.Cuisine.Id,
+					Name = r.Cuisine.Name
+				},
 
-                Categories = r.Categories.Select(c => new CategorySummaryDto
-                {
-                    Id = c.Id,
-                    Name = c.Name
-                }).ToList(),
+				Categories = r.Categories.Select(c => new CategorySummaryDto
+				{
+					Id = c.Id,
+					Name = c.Name
+				}).ToList(),
 
-                Ingredients = r.Ingredients.Select(i => new IngredientDto
-                {
-                    ProductId = i.ProductId,
-                    ProductName = i.Product?.Name ?? string.Empty,
+				Ingredients = r.Ingredients.Select(i => new IngredientDto
+				{
+					ProductId = i.ProductId,
+					ProductName = i.Product?.Name ?? string.Empty,
 					MeasureId = i.MeasureId,
 					Measure = i.Measure?.Name ?? string.Empty,
-                    Amount = (int)i.Quantity
-                }).ToList(),
+					Amount = (int)i.Quantity
+				}).ToList(),
 
-                Steps = r.Steps.OrderBy(s => s.Number).Select(s => new StepDto
-                {
-                    Number = s.Number,
-                    Title = s.Title,
-                    Description = s.Description,
-                    ImageUrl = s.ImageUrl,
-                    SubSteps = s.SubSteps?.OrderBy(ss => ss.Number)
-                        .Select(ss => ss.Description).ToArray()
-                }).ToList()
-            };
-        }
-    }
+				Steps = r.Steps.OrderBy(s => s.Number).Select(s => new StepDto
+				{
+					Number = s.Number,
+					Title = s.Title,
+					Description = s.Description,
+					ImageUrl = s.ImageUrl,
+					SubSteps = s.SubSteps?.OrderBy(ss => ss.Number)
+						.Select(ss => ss.Description).ToArray()
+				}).ToList()
+			};
+		}
+	}
 }

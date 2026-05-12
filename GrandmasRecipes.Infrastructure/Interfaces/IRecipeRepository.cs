@@ -43,18 +43,25 @@ namespace GrandmasRecipes.Infrastructure.Interfaces
 		/// <param name="page">Номер сторінки (починається з 0).</param>
 		/// <param name="pageSize">Кількість рецептів на сторінці.</param>
 		Task<PagedResult<Recipe>> GetRecipesByFiltersAsync(
-            ICollection<int>? categoryIds,
-            ICollection<int>? cuisineIds,
-            ICollection<int>? difficultyIds,
-            ICollection<int>? productIds,
-            int page,
-            int pageSize = 10);
+			string? searchQuery,
+			ICollection<int>? categoryIds,
+			ICollection<int>? cuisineIds,
+			ICollection<int>? difficultyIds,
+			ICollection<int>? productIds,
+			int page,
+			int pageSize = 10 );
 
-        /// <summary>
-        /// Отримати повні дані рецепту включаючи автора, інгредієнти, кроки, категорії та лайки.
-        /// </summary>
-        /// <param name="id">Ідентифікатор рецепту.</param>
-        Task<Recipe?> GetRecipeByIdWithAllAsync(Guid id);
+		/// <summary>
+		/// Отримати дані рецепту.
+		/// </summary>
+		/// <param name="id">Ідентифікатор рецепту.</param>
+		Task<Recipe?> GetRecipeByIdAsync ( Guid id );
+
+		/// <summary>
+		/// Отримати повні дані рецепту включаючи автора, інгредієнти, кроки, категорії та лайки.
+		/// </summary>
+		/// <param name="id">Ідентифікатор рецепту.</param>
+		Task<Recipe?> GetRecipeByIdWithAllAsync(Guid id);
 
         /// <summary>Додати новий рецепт.</summary>
         /// <param name="recipe">Рецепт для додавання.</param>

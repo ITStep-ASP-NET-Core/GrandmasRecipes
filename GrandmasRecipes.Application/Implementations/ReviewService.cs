@@ -39,7 +39,8 @@ namespace GrandmasRecipes.Application.Implementations
         {
             var review = new Review
             {
-                AccountId = dto.AuthorId,
+				RecipeId = dto.RecipeId,
+				AccountId = dto.AuthorId,
                 Comment = dto.Comment,
                 SendingDate = DateTime.UtcNow
             };
