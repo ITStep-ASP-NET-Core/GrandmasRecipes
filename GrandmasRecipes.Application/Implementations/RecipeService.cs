@@ -30,7 +30,7 @@ namespace GrandmasRecipes.Application.Implementations
 
 		public async Task<PagedResult<RecipePreviewDto>> GetRecipesAsync ( int page, Guid? userId = null )
 		{
-			var result = await _recipeRepository.GetRecipesByLikesAsync(page);
+			var result = await _recipeRepository.GetRecipesByLikesAsync(page >= 0 ? page : 0);
 			return await MapToPreviewPaged(result, userId);
 		}
 
@@ -53,7 +53,7 @@ namespace GrandmasRecipes.Application.Implementations
 
 		public async Task<PagedResult<RecipePreviewDto>> GetRecipesByLikedAsync(Guid userId, int page)
         {
-            var result = await _recipeRepository.GetRecipesByLikesAsync(page >= 0 ? page : 0);
+            var result = await _recipeRepository.GetLikedRecipesByUserAsync(userId, page >= 0 ? page : 0);
             return await MapToPreviewPaged(result, userId);
         }
 
@@ -64,28 +64,83 @@ namespace GrandmasRecipes.Application.Implementations
 			return await MapToDetails(r, userId);
 		}
 
-		public async Task<Result> CreateRecipeAsync(RecipeCreateDto dto)
-        {
-            var recipe = new Recipe
-            {
-                Id = Guid.NewGuid(),
-                Title = dto.Title,
-                Description = dto.Description,
-                ImageUrls = dto.ImageUrls,
-                Calories = dto.Calories,
-                Likes = 0,
-                PublishedDate = DateTime.UtcNow,
-                AuthorId = dto.AuthorId,
-                DifficultyId= dto.DifficultyId,
-                CuisineId = dto.CuisineId,
-            };
+		public async Task<(Guid?, Result)> CreateRecipeAsync ( RecipeCreateDto dto )
+		{
+			var recipeId = Guid.NewGuid();
 
-            await _recipeRepository.AddRecipeAsync(recipe);
-            await _uow.SaveChangesAsync();
-            return Result.Ok();
-        }
+			var recipe = new Recipe
+			{
+				Id = recipeId,
+				Title = dto.Title,
+				Description = dto.Description,
+				ImageUrls = dto.ImageUrls,
+				Calories = dto.Calories,
+				Likes = 0,
+				PublishedDate = DateTime.UtcNow,
+				AuthorId = dto.AuthorId,
+				DifficultyId = dto.DifficultyId,
+				CuisineId = dto.CuisineId,
+			};
 
-        public async Task<Result> EditRecipeAsync(RecipeEditDto dto)
+			if(dto.CategoryIds is { } categoryIds && categoryIds.Any())
+			{
+				var idsSet = categoryIds.ToHashSet();
+				var allCategories = await _uow.Categories.GetAllAsync();
+				var categories = allCategories.Where(c => idsSet.Contains(c.Id));
+				foreach(var c in categories)
+					recipe.Categories.Add(c);
+			}
+
+			if(dto.Ingredients is { } ingredients)
+			{
+				foreach(var i in ingredients)
+				{
+					recipe.Ingredients.Add(new Ingredient
+					{
+						RecipeId = recipeId,
+						ProductId = i.ProductId,
+						MeasureId = i.MeasureId,
+						Quantity = i.Amount
+					});
+				}
+			}
+
+			if(dto.Steps is { } steps)
+			{
+				foreach(var s in steps)
+				{
+					var step = new Step
+					{
+						RecipeId = recipeId,
+						Number = s.Number,
+						Title = s.Title,
+						Description = s.Description,
+						ImageUrl = s.ImageUrl
+					};
+
+					if(s.SubSteps is { } subSteps)
+					{
+						int subNumber = 1;
+						foreach(var ss in subSteps)
+						{
+							step.SubSteps.Add(new SubStep
+							{
+								Number = subNumber++,
+								Description = ss
+							});
+						}
+					}
+
+					recipe.Steps.Add(step);
+				}
+			}
+
+			await _recipeRepository.AddRecipeAsync(recipe);
+			await _uow.SaveChangesAsync();
+			return (recipeId, Result.Ok());
+		}
+
+		public async Task<Result> EditRecipeAsync(RecipeEditDto dto)
         {
             var recipe = await _recipeRepository.GetRecipeByIdWithAllAsync(dto.RecipeId);
             if (recipe == null) return Result.Fail("Рецепт не найден");

@@ -49,7 +49,7 @@ namespace GrandmasRecipes.Application.Interfaces
 
         /// <summary>Створити новий рецепт.</summary>
         /// <param name="recipeDto">Дані для створення рецепту.</param>
-        Task<Result> CreateRecipeAsync(RecipeCreateDto recipeDto);
+        Task<(Guid?, Result)> CreateRecipeAsync(RecipeCreateDto recipeDto);
 
         /// <summary>
         /// Редагувати існуючий рецепт.

@@ -135,12 +135,12 @@ namespace GrandmasRecipes.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateRecipe([FromBody] RecipeCreateDto dto)
         {
-            var result = await _recipeService.CreateRecipeAsync(dto);
-            if (!result.Success)
-                return BadRequest(result.Error);
+			var result = await _recipeService.CreateRecipeAsync(dto);
+			if(!result.Item2.Success)
+				return BadRequest(result.Item2.Error);
 
-            return Ok();
-        }
+			return Ok(new { id = result.Item1 });
+		}
 
         /// <summary>
         /// Редагувати рецепт.

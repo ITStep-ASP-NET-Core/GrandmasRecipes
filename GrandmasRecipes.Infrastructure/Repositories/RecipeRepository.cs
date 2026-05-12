@@ -55,6 +55,28 @@ namespace GrandmasRecipes.Infrastructure.Repositories
 			};
 		}
 
+		public async Task<PagedResult<Recipe>> GetLikedRecipesByUserAsync ( Guid userId, int page, int pageSize = 10 )
+		{
+			var query = _context.Recipes
+				.Where(r => _context.Likes.Any(l => l.AccountId == userId && l.RecipeId == r.Id));
+
+			var items = await query
+				.OrderByDescending(r => r.PublishedDate)
+				.Skip(page * pageSize)
+				.Take(pageSize)
+				.Include(r => r.Author)
+				.AsNoTracking()
+				.ToListAsync();
+
+			return new PagedResult<Recipe>
+			{
+				Items = items,
+				PageNumber = page,
+				PageSize = pageSize,
+				TotalCount = await query.CountAsync()
+			};
+		}
+
 		public async Task<PagedResult<Recipe>> GetRecipesByFiltersAsync (
 			ICollection<int>? categoryIds,
 			ICollection<int>? cuisineIds,

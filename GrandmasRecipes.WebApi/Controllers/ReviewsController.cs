@@ -52,13 +52,14 @@ namespace GrandmasRecipes.WebApi.Controllers
         [HttpPost("recipe/{recipeId:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateReview(Guid recipeId, [FromBody] ReviewCreateDto dto)
-        {
-            var result = await _reviewService.CreateReviewAsync(dto);
-            if (!result.Success)
-                return BadRequest(result.Error);
+		public async Task<IActionResult> CreateReview ( Guid recipeId, [FromBody] ReviewCreateDto dto )
+		{
+			dto.RecipeId = recipeId;
+			var result = await _reviewService.CreateReviewAsync(dto);
+			if(!result.Success)
+				return BadRequest(result.Error);
 
-            return Ok();
-        }
-    }
+			return Ok();
+		}
+	}
 }
