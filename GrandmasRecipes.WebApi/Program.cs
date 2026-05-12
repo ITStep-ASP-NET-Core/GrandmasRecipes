@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using System.Text;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,24 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+	options.AddDocumentTransformer(( document, context, cancellationToken ) =>
+	{
+		document.Info.Title = "GrandmasRecipes API";
+		document.Info.Version = "v1";
+
+		return Task.CompletedTask;
+	});
+
+	options.AddOperationTransformer(( operation, context, cancellationToken ) =>
+	{
+		return Task.CompletedTask;
+	});
+});
 
 builder.Services.AddCors(options =>
 {
